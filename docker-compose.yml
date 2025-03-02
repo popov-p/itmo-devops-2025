@@ -1,0 +1,23 @@
+services: 
+  node:
+    build:
+      context: ./frontend
+    restart: on-failure
+    ports:
+      - "5173:5173"
+    volumes:
+      - frontend_src:/frontend/src
+    develop:
+      watch:
+        - action: sync+restart
+          path: .
+          target: .
+    networks:
+      - frontend-network
+
+volumes:
+  frontend_src:
+
+networks:
+  frontend-network:
+    driver: bridge
