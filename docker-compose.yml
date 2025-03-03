@@ -1,5 +1,5 @@
 services: 
-  node:
+  frontend:
     build:
       context: ./frontend
     restart: on-failure
@@ -13,11 +13,45 @@ services:
           path: .
           target: .
     networks:
-      - frontend-network
+      - itmo_devops_net
+
+  backend:
+    build:
+      context: ./backend
+    restart: on-failure
+    ports:
+      - "8070:8070"
+    volumes:
+      - backend_src:/backend/src
+    develop:
+      watch:
+        - action: sync+restart
+          path: .
+          target: .
+    depends_on:
+      - mongo
+    networks:
+      - itmo_devops_net
+
+  mongo:
+    image: mongo
+    restart: on-failure
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: pavel
+      MONGO_INITDB_ROOT_PASSWORD: popov
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - itmo_devops_net
+
 
 volumes:
   frontend_src:
+  backend_src:
+  mongo_data:
 
 networks:
-  frontend-network:
+  itmo_devops_net:
     driver: bridge
