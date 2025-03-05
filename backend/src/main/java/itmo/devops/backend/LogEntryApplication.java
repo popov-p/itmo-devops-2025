@@ -6,9 +6,9 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 @SpringBootApplication
 @EnableMongoRepositories(basePackages = "itmo.devops.backend")
-public class BackendApplication {
+public class LogEntryApplication {
 	public static void main(String[] args) {
-		SpringApplication.run(BackendApplication.class, args);
+		SpringApplication.run(LogEntryApplication.class, args);
 	}
 
 }
