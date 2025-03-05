@@ -9,33 +9,27 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import TableSortLabel from '@mui/material/TableSortLabel';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
-import { visuallyHidden } from '@mui/utils';
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
 
-
-function createData(id, name, calories, fat, carbs, protein) {
+function createData(id, name, description, datetime) {
   return {
     id,
     name,
-    calories,
-    fat,
-    carbs,
-    protein,
+    description,
+    datetime
   };
 }
 
 const rows = [
-  createData(1, 'Cupcake', 305, 3.7, 67, 4.3),
+  createData(1, 'Cupcйцуцйцйцуйцуйцуйцуake', "qwertasdfgiuqwqwerqwerqwerqwererqwerqwerqwerqwerashdflasdfhlajksdhjlk", 3.7, 67, 4.3),
   createData(2, 'Donut', 452, 25.0, 51, 4.9),
   createData(3, 'Eclair', 262, 16.0, 24, 6.0),
   createData(4, 'Frozen yoghurt', 159, 6.0, 24, 4.0),
@@ -50,61 +44,30 @@ const rows = [
   createData(13, 'Oreo', 437, 18.0, 63, 4.0),
 ];
 
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator(order, orderBy) {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
 const headCells = [
   {
     id: 'name',
-    numeric: false,
+    align: 'left',
     disablePadding: true,
-    label: 'Dessert (100g serving)',
+    label: 'ФИО Сотрудника',
   },
   {
-    id: 'calories',
-    numeric: true,
+    id: 'description',
+    align: 'center',
     disablePadding: false,
-    label: 'Calories',
+    label: 'Внёс изменения',
   },
   {
-    id: 'fat',
-    numeric: true,
+    id: 'datetime',
+    align: 'right',
     disablePadding: false,
-    label: 'Fat (g)',
-  },
-  {
-    id: 'carbs',
-    numeric: true,
-    disablePadding: false,
-    label: 'Carbs (g)',
-  },
-  {
-    id: 'protein',
-    numeric: true,
-    disablePadding: false,
-    label: 'Protein (g)',
+    label: 'Дата и время',
   },
 ];
 
 function EnhancedTableHead(props) {
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
+  const { onSelectAllClick, numSelected, rowCount } =
     props;
-  const createSortHandler = (property) => (event) => {
-    onRequestSort(event, property);
-  };
 
   return (
     <TableHead>
@@ -116,29 +79,17 @@ function EnhancedTableHead(props) {
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
             inputProps={{
-              'aria-label': 'select all desserts',
+              'aria-label': 'select all logs',
             }}
           />
         </TableCell>
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
+            align={headCell.id === 'name' ? 'left' : headCell.align}
             padding={headCell.disablePadding ? 'none' : 'normal'}
-            sortDirection={orderBy === headCell.id ? order : false}
           >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </Box>
-              ) : null}
-            </TableSortLabel>
+            {headCell.label}
           </TableCell>
         ))}
       </TableRow>
@@ -148,10 +99,7 @@ function EnhancedTableHead(props) {
 
 EnhancedTableHead.propTypes = {
   numSelected: PropTypes.number.isRequired,
-  onRequestSort: PropTypes.func.isRequired,
   onSelectAllClick: PropTypes.func.isRequired,
-  order: PropTypes.oneOf(['asc', 'desc']).isRequired,
-  orderBy: PropTypes.string.isRequired,
   rowCount: PropTypes.number.isRequired,
 };
 
@@ -177,7 +125,7 @@ function EnhancedTableToolbar(props) {
           variant="subtitle1"
           component="div"
         >
-          {numSelected} selected
+          Выбрано записей: {numSelected}
         </Typography>
       ) : (
         <Typography
@@ -189,13 +137,33 @@ function EnhancedTableToolbar(props) {
           История
         </Typography>
       )}
-      {numSelected > 0 ? (
+      {numSelected === 0 ? (
+        <Tooltip title="Add">
+          <IconButton>
+            <AddIcon />
+          </IconButton>
+        </Tooltip>
+      ) : numSelected === 1 ? (
+        <>
+          <Tooltip title="Edit">
+            <IconButton>
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete">
+            <IconButton>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        </>
+      ) : numSelected > 1 ? (
         <Tooltip title="Delete">
           <IconButton>
             <DeleteIcon />
           </IconButton>
         </Tooltip>
-      ) : (<></>)}
+      ) : null}
+
     </Toolbar>
   );
 }
@@ -206,7 +174,7 @@ EnhancedTableToolbar.propTypes = {
 
 export default function EnhancedTable() {
   const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('calories');
+  const [orderBy, setOrderBy] = React.useState('description');
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -261,7 +229,6 @@ export default function EnhancedTable() {
   const visibleRows = React.useMemo(
     () =>
       [...rows]
-        .sort(getComparator(order, orderBy))
         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
     [order, orderBy, page, rowsPerPage],
   );
@@ -281,7 +248,6 @@ export default function EnhancedTable() {
               order={order}
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
               rowCount={rows.length}
             />
             <TableBody>
@@ -314,13 +280,20 @@ export default function EnhancedTable() {
                       id={labelId}
                       scope="row"
                       padding="none"
+                      align="left"
                     >
                       {row.name}
                     </TableCell>
-                    <TableCell align="right">{row.calories}</TableCell>
-                    <TableCell align="right">{row.fat}</TableCell>
-                    <TableCell align="right">{row.carbs}</TableCell>
-                    <TableCell align="right">{row.protein}</TableCell>
+                    <TableCell align="center"
+                      sx={{
+                        maxWidth: '180px',
+                        wordWrap: 'break-word',
+                        whiteSpace: 'normal',
+                      }}
+                    >
+                      {row.description}
+                    </TableCell>
+                    <TableCell align="right">{row.datetime}</TableCell>
                   </TableRow>
                 );
               })}

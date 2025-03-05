@@ -4,29 +4,28 @@ import { createRoot } from 'react-dom/client'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
 
-import Login from './Login';
 import Home from './Home';
 
 const duneTheme = createTheme({
   palette: {
-    mode: 'dark', // Тёмная тема
+    mode: 'dark',
     primary: {
-      main: '#00e676', // Яркий зеленый цвет
+      main: '#00e676',
     },
     secondary: {
-      main: '#00bfae', // Светлый зеленый/бирюзовый для вторичной схемы
+      main: '#00bfae',
     },
     background: {
-      default: '#121212', // Темный фон
-      paper: '#1C1C1C', // Тёмный фон для карточек и диалогов
+      default: '#121212',
+      paper: '#1C1C1C',
     },
     text: {
-      primary: '#ffffff', // Белый текст
-      secondary: '#D3D3D3', // Более светлый текст для вторичных элементов
+      primary: '#ffffff',
+      secondary: '#D3D3D3',
     },
   },
   typography: {
-    fontFamily: '"Roboto", sans-serif', // Шрифт по умолчанию
+    fontFamily: '"Roboto", sans-serif',
   },
 });
 
@@ -40,7 +39,6 @@ export default function Main() {
       <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
         </Routes>
       </Router>
     </ThemeProvider>
