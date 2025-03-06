@@ -14,6 +14,8 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "axios": "^1.8.0",
+    "react-hook-form": "latest",
     "@mui/icons-material": "^5.7.0",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",

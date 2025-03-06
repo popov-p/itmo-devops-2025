@@ -24,8 +24,8 @@ export default function Home() {
                     justifyContent: 'center',
                 }}
             >
-                    <EnhancedTable>
-                    </EnhancedTable>
+                <EnhancedTable>
+                </EnhancedTable>
             </Container>
         </Box>
     );

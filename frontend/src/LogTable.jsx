@@ -18,31 +18,8 @@ import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
-
-function createData(id, name, description, datetime) {
-  return {
-    id,
-    name,
-    description,
-    datetime
-  };
-}
-
-const rows = [
-  createData(1, 'Cupcйцуцйцйцуйцуйцуйцуake', "qwertasdfgiuqwqwerqwerqwerqwererqwerqwerqwerqwerashdflasdfhlajksdhjlk", 3.7, 67, 4.3),
-  createData(2, 'Donut', 452, 25.0, 51, 4.9),
-  createData(3, 'Eclair', 262, 16.0, 24, 6.0),
-  createData(4, 'Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData(5, 'Gingerbread', 356, 16.0, 49, 3.9),
-  createData(6, 'Honeycomb', 408, 3.2, 87, 6.5),
-  createData(7, 'Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData(8, 'Jelly Bean', 375, 0.0, 94, 0.0),
-  createData(9, 'KitKat', 518, 26.0, 65, 7.0),
-  createData(10, 'Lollipop', 392, 0.2, 98, 0.0),
-  createData(11, 'Marshmallow', 318, 0, 81, 2.0),
-  createData(12, 'Nougat', 360, 19.0, 9, 37.0),
-  createData(13, 'Oreo', 437, 18.0, 63, 4.0),
-];
+import {useEffect, useState} from "react";
+import axios from "axios";
 
 const headCells = [
   {
@@ -111,14 +88,10 @@ function EnhancedTableToolbar(props) {
         {
           pl: { sm: 2 },
           pr: { xs: 1, sm: 1 },
-        },
-        numSelected > 0 && {
-          bgcolor: (theme) =>
-            alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-        },
+        }
       ]}
     >
-      {numSelected > 0 ? (
+    {numSelected > 0 ? (
         <Typography
           sx={{ flex: '1 1 100%' }}
           color="inherit"
@@ -178,12 +151,24 @@ export default function EnhancedTable() {
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rows, setRows] = useState([]);
 
-  const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
-  };
+  function test(){
+    axios.get('http://localhost:8070/api/logentries')
+        .then((response) => {
+          setRows(response.data);
+          console.log("Данные успешно загружены !", "rows: ", rows, "response data: ", response.data);
+        })
+        .catch((error) => {
+          console.log("Ошибка загрузки данных с бэкенда ...")
+        });
+  }
+
+  useEffect(() => {
+    // Выполняем GET запрос для получения данных из базы данных
+    test();
+  }, []);
+
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
@@ -235,6 +220,9 @@ export default function EnhancedTable() {
 
   return (
     <Box sx={{ width: '100%' }}>
+      {
+        rows.length === 0 ? console.log("nixuya") : console.log(rows)
+      }
       <Paper sx={{ width: '100%', mb: 2 }}>
         <EnhancedTableToolbar numSelected={selected.length} />
         <TableContainer>

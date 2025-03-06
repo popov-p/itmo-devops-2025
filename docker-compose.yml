@@ -23,11 +23,6 @@ services:
       - "8070:8070"
     volumes:
       - backend_src:/backend/src
-    develop:
-      watch:
-        - action: sync+restart
-          path: .
-          target: .
     depends_on:
       - mongo
     networks:

@@ -1,5 +1,6 @@
 package itmo.devops.backend;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/logentries")
 public class LogEntryController {
@@ -19,7 +21,7 @@ public class LogEntryController {
     @GetMapping
     public ResponseEntity<List<LogEntry>> getAllLogEntries() {
         List<LogEntry> logEntries = logEntryService.getAllLogEntries();
-
+        // lol-kek
         if (logEntries.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
