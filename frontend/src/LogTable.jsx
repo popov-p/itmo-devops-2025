@@ -1,6 +1,5 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -18,7 +17,7 @@ import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 const headCells = [
@@ -91,7 +90,7 @@ function EnhancedTableToolbar(props) {
         }
       ]}
     >
-    {numSelected > 0 ? (
+      {numSelected > 0 ? (
         <Typography
           sx={{ flex: '1 1 100%' }}
           color="inherit"
@@ -146,27 +145,25 @@ EnhancedTableToolbar.propTypes = {
 };
 
 export default function EnhancedTable() {
-  const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('description');
-  const [selected, setSelected] = React.useState([]);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [selected, setSelected] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  function test(){
-    axios.get('http://localhost:8070/api/logentries')
+  useEffect(() => {
+    const fetchData = async () => {
+      await axios.get('http://localhost:8070/api/logentries')
         .then((response) => {
           setRows(response.data);
-          console.log("Данные успешно загружены !", "rows: ", rows, "response data: ", response.data);
+          setLoading(false);
+          console.log("Данные успешно загружены !", "response data: ", response.data);
         })
         .catch((error) => {
           console.log("Ошибка загрузки данных с бэкенда ...")
         });
-  }
-
-  useEffect(() => {
-    // Выполняем GET запрос для получения данных из базы данных
-    test();
+    }
+    fetchData();
   }, []);
 
 
@@ -215,14 +212,12 @@ export default function EnhancedTable() {
     () =>
       [...rows]
         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [order, orderBy, page, rowsPerPage],
+    [rows, page, rowsPerPage],
   );
 
-  return (
+  return (loading ? <>{console.log("loading?: ", loading)} </> : (
     <Box sx={{ width: '100%' }}>
-      {
-        rows.length === 0 ? console.log("nixuya") : console.log(rows)
-      }
+      {console.log("loading?: ", loading)}
       <Paper sx={{ width: '100%', mb: 2 }}>
         <EnhancedTableToolbar numSelected={selected.length} />
         <TableContainer>
@@ -233,13 +228,12 @@ export default function EnhancedTable() {
           >
             <EnhancedTableHead
               numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               rowCount={rows.length}
             />
             <TableBody>
               {visibleRows.map((row, index) => {
+                console.log("Загруженная строка: ", row)
                 const isItemSelected = selected.includes(row.id);
                 const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -270,7 +264,7 @@ export default function EnhancedTable() {
                       padding="none"
                       align="left"
                     >
-                      {row.name}
+                      {row.employeeName}
                     </TableCell>
                     <TableCell align="center"
                       sx={{
@@ -279,9 +273,9 @@ export default function EnhancedTable() {
                         whiteSpace: 'normal',
                       }}
                     >
-                      {row.description}
+                      {row.logMessage}
                     </TableCell>
-                    <TableCell align="right">{row.datetime}</TableCell>
+                    <TableCell align="right">{row.timestamp}</TableCell>
                   </TableRow>
                 );
               })}
@@ -298,7 +292,7 @@ export default function EnhancedTable() {
           </Table>
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[5, 10]}
           component="div"
           count={rows.length}
           rowsPerPage={rowsPerPage}
@@ -307,6 +301,6 @@ export default function EnhancedTable() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
-    </Box>
+    </Box>)
   );
 }
