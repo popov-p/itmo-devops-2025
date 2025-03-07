@@ -6,7 +6,7 @@ services:
     ports:
       - "5173:5173"
     volumes:
-      - frontend_src:/frontend/src
+      - ./frontend/src:/frontend/src
     develop:
       watch:
         - action: sync+restart
@@ -43,7 +43,6 @@ services:
 
 
 volumes:
-  frontend_src:
   backend_src:
   mongo_data:
 

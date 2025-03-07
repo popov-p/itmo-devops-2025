@@ -1,5 +1,6 @@
 package itmo.devops.backend;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -12,6 +13,8 @@ public class LogEntry {
     private String id;
     private String employeeName;
     private String logMessage;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime timestamp;
 
     public LogEntry(String id, String employeeName, String logMessage, LocalDateTime timestamp) {

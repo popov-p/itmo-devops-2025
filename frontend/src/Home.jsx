@@ -2,7 +2,7 @@ import {
     Container, Box, Typography, AppBar, Toolbar
 } from '@mui/material';
 
-import EnhancedTable from './LogTable'
+import LogTable from './LogTable/LogTable.jsx'
 
 export default function Home() {
     return (
@@ -24,8 +24,8 @@ export default function Home() {
                     justifyContent: 'center',
                 }}
             >
-                <EnhancedTable>
-                </EnhancedTable>
+                <LogTable>
+                </LogTable>
             </Container>
         </Box>
     );
