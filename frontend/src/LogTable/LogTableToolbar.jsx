@@ -16,7 +16,12 @@ import LogFormDialog from "./LogFormDialog.jsx";
 export default function LogTableToolbar(props) {
     const { rows, setRows } = useRows();
     const { selectedRows, selectMultipleRows } = useSelectedRows();
-    const { numSelected, page, rowsPerPage } = props;
+    const { numSelected } = props;
+
+    const [dialogEmployeeName, setDialogEmployeeName] = useState('');
+    const [editableLogEntry, setEditableLogEntry] = useState('');
+    const [idToEdit, setIdToEdit] = useState(null);
+
 
     const [logFormDialogOpened, setLogFormDialogOpened] = useState(false);
 
@@ -73,10 +78,42 @@ export default function LogTableToolbar(props) {
     function handleEdit() {
         const timeInMicroseconds = performance.now();
         console.log(`Нажата кнопка Edit, время: ${timeInMicroseconds.toFixed(0)} микросекунд`);
+
+        if (selectedRows.length !== 1) {
+            console.warn("Должна быть выделена только одна строка для редактирования!");
+            return;
+        }
+
+        const selectedId = selectedRows[0];
+        const selectedRow = rows.find(row => row.id === selectedId);
+
+        if (!selectedRow) {
+            console.error("Не удалось найти запись для редактирования.");
+            return;
+        }
+
+        console.log("Редактируемая запись:", selectedRow);
+
+        axios.get(`http://127.0.0.1:8070/api/logentries/${selectedId}`)
+            .then((response) => {
+                console.log("Данные для редактирования получены:", response.data);
+
+                setDialogEmployeeName(response.data.employeeName || '');
+                setEditableLogEntry(response.data.logMessage || '');
+                
+
+                setIdToEdit(selectedId);
+                openLogFormDialog();
+            })
+            .catch((error) => {
+                console.error("Ошибка загрузки данных для редактирования:", error);
+            });
+
     }
 
     function handleAdd() {
         const timeInMicroseconds = performance.now();
+        setIdToEdit(null);
         openLogFormDialog();
         console.log(`Нажата кнопка Add, время: ${timeInMicroseconds.toFixed(0)} микросекунд`);
     };
@@ -137,7 +174,10 @@ export default function LogTableToolbar(props) {
             ) : null}
             {logFormDialogOpened && <LogFormDialog
                 opened={logFormDialogOpened}
-                closeLogFormDialog={closeLogFormDialog} />}
+                idToEdit={idToEdit}
+                closeLogFormDialog={closeLogFormDialog}
+                employeeName={dialogEmployeeName}
+                logMessage={editableLogEntry} />}
         </Toolbar>
 
     );

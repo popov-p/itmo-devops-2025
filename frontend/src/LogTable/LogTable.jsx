@@ -68,7 +68,7 @@ export default function LogTable() {
         }
         else if (event.target.checked && selectedRows.length === 0) {
             console.log('---> not checked and selecting all')
-            const newSelected = rows.map((row) => row.id);
+            const newSelected = visibleRows.map((row) => row.id);
             console.log(newSelected);
             selectMultipleRows(newSelected);
             return;

@@ -30,7 +30,7 @@ public class LogEntryController {
         return ResponseEntity.ok(logEntries);
     }
 
-    @GetMapping("/api/logentries/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<LogEntry> getLogById(@PathVariable String id) {
         Optional<LogEntry> logEntry = logEntryService.getLogEntryById(id);
 
@@ -57,6 +57,7 @@ public class LogEntryController {
         }
 
         logEntry.setId(id);
+        logEntry.setTimestamp(LocalDateTime.now());
         LogEntry updatedLog = logEntryService.saveLogEntry(logEntry);
 
         return ResponseEntity.ok(updatedLog);

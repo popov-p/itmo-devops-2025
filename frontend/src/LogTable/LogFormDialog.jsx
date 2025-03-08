@@ -23,7 +23,12 @@ const schema = yup.object().shape({
 });
 
 
-export default function LogFormDialog({ opened, closeLogFormDialog }) {
+export default function LogFormDialog({
+  opened,
+  idToEdit,
+  closeLogFormDialog,
+  employeeName,
+  logMessage }) {
 
   const {
     control,
@@ -37,7 +42,15 @@ export default function LogFormDialog({ opened, closeLogFormDialog }) {
     try {
       console.log(data);
 
-      const response = await axios.post('http://localhost:8070/api/logentries', data);
+      let response;
+
+      if (idToEdit) {
+        response = await axios.put(`http://localhost:8070/api/logentries/${idToEdit}`, data);
+        console.log(`Запись с ID ${idToEdit} обновлена:`, response.data);
+      } else {
+        response = await axios.post('http://localhost:8070/api/logentries', data);
+        console.log('Новая запись создана:', response.data);
+      }
 
       console.log('Ответ от сервера:', response.data);
 
@@ -67,14 +80,14 @@ export default function LogFormDialog({ opened, closeLogFormDialog }) {
           <Controller
             name="employeeName"
             control={control}
-            defaultValue=""
+            defaultValue={employeeName}
             render={({ field }) => (
               <TextField
                 {...field}
                 label="ФИО"
                 variant="outlined"
                 fullWidth
-                sx= {{marginBottom: 2, marginTop: 2}}
+                sx={{ marginBottom: 2, marginTop: 2 }}
                 size="small"
                 error={!!errors.employeeName}
                 helperText={errors.employeeName?.message}
@@ -84,7 +97,7 @@ export default function LogFormDialog({ opened, closeLogFormDialog }) {
           <Controller
             name="logMessage"
             control={control}
-            defaultValue=""
+            defaultValue={logMessage}
             render={({ field }) => (
               <TextField
                 {...field}
