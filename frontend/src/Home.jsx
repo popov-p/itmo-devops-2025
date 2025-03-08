@@ -3,7 +3,7 @@ import {
 } from '@mui/material';
 
 import LogTable from './LogTable/LogTable.jsx'
-import { RowsProvider, SelectedRowsProvider } from './LogTable/LogTable.jsx';
+import { RowsProvider, SelectedRowsProvider } from './LogTable/LogContexts.jsx';
 export default function Home() {
     return (
         <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>

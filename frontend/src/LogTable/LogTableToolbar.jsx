@@ -7,42 +7,54 @@ import EditIcon from "@mui/icons-material/Edit.js";
 import DeleteIcon from "@mui/icons-material/Delete.js";
 import PropTypes from "prop-types";
 import * as React from "react";
-
-import { useEffect } from "react";
-import { useSelectedRows, useRows } from "./LogTable";
 import axios from "axios";
 
+import { useState, useEffect } from "react";
+import { useSelectedRows, useRows } from "./LogContexts.jsx";
+
+import LogFormDialog from "./LogFormDialog.jsx";
 export default function LogTableToolbar(props) {
-    const {rows, setRows} = useRows();
-    const { selectedRows, selectRow, selectMultipleRows} = useSelectedRows();
-    const { numSelected } = props;
+    const { rows, setRows } = useRows();
+    const { selectedRows, selectMultipleRows } = useSelectedRows();
+    const { numSelected, page, rowsPerPage } = props;
+
+    const [logFormDialogOpened, setLogFormDialogOpened] = useState(false);
+
+    const openLogFormDialog = () => {
+        setLogFormDialogOpened(true);
+    };
+
+    const closeLogFormDialog = () => {
+        setLogFormDialogOpened(false);
+    };
+
 
     useEffect(() => {
         console.log("Количество rows:", rows.length);
-    }, [rows]); 
+    }, [rows]);
 
 
     function handleDelete() {
         const timeInMicroseconds = performance.now();
         console.log(`Нажата кнопка Delete, время: ${timeInMicroseconds.toFixed(0)} микросекунд. Selected rows to delete:`, JSON.stringify(selectedRows));
-    
+
         const deleteRequests = selectedRows.map(id =>
             axios.delete(`http://127.0.0.1:8070/api/logentries/${id}`).then(() => id)
         );
-    
+
         Promise.allSettled(deleteRequests)
             .then(results => {
                 console.log("Все запросы на удаление завершились корректно:", results);
-    
+
                 const successfullyDeleted = results
                     .filter(result => result.status === "fulfilled")
                     .map(result => result.value);
-    
+
                 if (successfullyDeleted.length > 0) {
-                    setRows(prevRows => prevRows.filter(row => !successfullyDeleted.includes(row.id)));
+                    setRows(rows => rows.filter(row => !successfullyDeleted.includes(row.id)));
                     selectMultipleRows([]);
                 }
-    
+
                 results.forEach((result, index) => {
                     if (result.status === "fulfilled") {
                         console.log(`ID ${result.value} успешно удалён.`);
@@ -55,7 +67,7 @@ export default function LogTableToolbar(props) {
                 console.error('Неизвестная ошибка:', error);
             });
     }
-    
+
 
 
     function handleEdit() {
@@ -65,6 +77,7 @@ export default function LogTableToolbar(props) {
 
     function handleAdd() {
         const timeInMicroseconds = performance.now();
+        openLogFormDialog();
         console.log(`Нажата кнопка Add, время: ${timeInMicroseconds.toFixed(0)} микросекунд`);
     };
 
@@ -106,7 +119,7 @@ export default function LogTableToolbar(props) {
                 <>
                     <Tooltip title="Edit">
                         <IconButton>
-                            <EditIcon onClick={handleEdit}/>
+                            <EditIcon onClick={handleEdit} />
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Delete">
@@ -122,12 +135,14 @@ export default function LogTableToolbar(props) {
                     </IconButton>
                 </Tooltip>
             ) : null}
-
+            {logFormDialogOpened && <LogFormDialog
+                opened={logFormDialogOpened}
+                closeLogFormDialog={closeLogFormDialog} />}
         </Toolbar>
+
     );
 }
 
 LogTableToolbar.propTypes = {
     numSelected: PropTypes.number.isRequired,
 };
-

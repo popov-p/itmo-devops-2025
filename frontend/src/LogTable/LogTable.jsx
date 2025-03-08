@@ -8,82 +8,13 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
-import { useEffect, useState, createContext, useContext } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 import LogTableHead from './LogTableHead.jsx'
 import LogTableToolbar from './LogTableToolbar.jsx'
 
-
-const RowsContext = createContext();
-export const useRows = () => useContext(RowsContext);
-
-export const RowsProvider = ({ children }) => {
-    const [rows, setRows] = useState([]);
-
-    const updateRows = (newRows) => {
-        setRows(newRows);
-    };
-
-    return (
-        <RowsContext.Provider value={{ rows, setRows: updateRows }}>
-            {children}
-        </RowsContext.Provider>
-    );
-};
-
-
-const SelectedRowsContext = createContext();
-
-export const useSelectedRows = () => useContext(SelectedRowsContext);
-
-export const SelectedRowsProvider = ({ children }) => {
-    const [selectedRows, setSelectedRows] = useState([]);
-
-    const selectRow = (event, id) => {
-        const selectedIndex = selectedRows.indexOf(id);
-        let newSelected = [];
-
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selectedRows, id);
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selectedRows.slice(1));
-        } else if (selectedIndex === selectedRows.length - 1) {
-            newSelected = newSelected.concat(selectedRows.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(
-                selectedRows.slice(0, selectedIndex),
-                selectedRows.slice(selectedIndex + 1),
-            );
-        }
-
-        setSelectedRows(newSelected);
-    };
-
-
-    const selectMultipleRows = (ids) => {
-        if (ids.length === 0) {
-            setSelectedRows([]);
-            return;
-        }
-        let newSelected = [...selectedRows];
-
-        ids.forEach(id => {
-            if (!newSelected.includes(id)) {
-                newSelected.push(id);
-            }
-        });
-
-        setSelectedRows(newSelected);
-    };
-
-    return (
-        <SelectedRowsContext.Provider value={{ selectedRows, selectRow, selectMultipleRows }}>
-            {children}
-        </SelectedRowsContext.Provider>
-    );
-};
-
+import { useRows, useSelectedRows } from './LogContexts.jsx';
 
 export default function LogTable() {
     const { rows, setRows } = useRows([]);
@@ -97,9 +28,24 @@ export default function LogTable() {
     }, [selectedRows]);
 
     useEffect(() => {
+        console.log("Количество  rows:", rows.length);
+        const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+        console.log("totalPages: ", totalPages,
+                    "rows.length: ", rows.length);
+
+        if (rows.length === 0) {
+            setPage(0);
+        } else if (page >= totalPages) {
+            setPage(Math.max(0, totalPages - 1));
+        }
+
+    }, [rows]);
+
+    useEffect(() => {
         axios.get('http://127.0.0.1:8070/api/logentries')
             .then((response) => {
-                setRows(response.data);
+                setRows(response.data.reverse());
                 setLoading(false);
                 console.log("Данные успешно загружены !", "response data: ", response.data);
             })
@@ -120,14 +66,14 @@ export default function LogTable() {
             selectMultipleRows([]);
             return;
         }
-        else if (event.target.checked  &&  selectedRows.length === 0) {
+        else if (event.target.checked && selectedRows.length === 0) {
             console.log('---> not checked and selecting all')
             const newSelected = rows.map((row) => row.id);
             console.log(newSelected);
             selectMultipleRows(newSelected);
             return;
         }
-        else if (event.target.checked &&  0 < selectedRows.length < rows.length
+        else if (event.target.checked && 0 < selectedRows.length < rows.length
         ) {
             console.log('---> intermediate')
             selectMultipleRows([]);
@@ -142,6 +88,7 @@ export default function LogTable() {
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
+        selectMultipleRows([]);
     };
 
     const handleChangeRowsPerPage = (event) => {
@@ -163,7 +110,11 @@ export default function LogTable() {
     return (loading ? <></> : (
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
-                <LogTableToolbar numSelected={selectedRows.length} />
+                <LogTableToolbar
+                    numSelected={selectedRows.length}
+                    page={page}
+                    rowsPerPage={rowsPerPage}
+                />
                 <TableContainer>
                     <Table
                         sx={{ minWidth: 750 }}
