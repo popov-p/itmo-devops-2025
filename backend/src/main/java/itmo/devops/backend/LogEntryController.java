@@ -1,5 +1,7 @@
 package itmo.devops.backend;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin(origins = "http://localhost:5173")
+
 @RestController
 @RequestMapping("/api/logentries")
 public class LogEntryController {
@@ -21,7 +23,6 @@ public class LogEntryController {
     @GetMapping
     public ResponseEntity<List<LogEntry>> getAllLogEntries() {
         List<LogEntry> logEntries = logEntryService.getAllLogEntries();
-        // lol-kek
         if (logEntries.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
@@ -72,5 +73,26 @@ public class LogEntryController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/logentries")
+    public ResponseEntity<String> deleteLogEntries(@RequestBody List<String> ids) {
+        boolean allDeleted = true;
+
+        for (String id : ids) {
+            if (!logEntryService.deleteLogEntryById(id)) {
+                allDeleted = false;
+            }
+        }
+
+        if (allDeleted) {
+            logger.info("Controller: All log entries successfully deleted.");
+            return ResponseEntity.ok("All log entries successfully deleted.");
+        } else {
+            logger.warn("Controller: Some log entries could not be deleted.");
+            return ResponseEntity.status(400).body("Some log entries could not be deleted.");
+        }
+    }
+
+    private static final Logger logger = LoggerFactory.getLogger(LogEntryController.class);
 
 }

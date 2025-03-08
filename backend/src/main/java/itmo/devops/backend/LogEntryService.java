@@ -27,15 +27,15 @@ public class LogEntryService {
     }
 
     public boolean deleteLogEntryById(String id) {
-        logger.info("Attempting to delete log entry with id: {}", id);
+        logger.info("Service: Attempting to delete log entry with id: {}", id);
 
         if (!logEntryRepository.existsById(id)) {
-            logger.warn("Log entry with id: {} does not exist", id);
+            logger.warn("Service: Log entry with id: {} does not exist", id);
             return false;
         }
 
         logEntryRepository.deleteById(id);
-        logger.info("Log entry with id: {} successfully deleted", id);
+        logger.info("Service: Log entry with id: {} successfully deleted", id);
 
         return true;
     }

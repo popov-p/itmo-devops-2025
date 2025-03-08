@@ -4,7 +4,7 @@ import TableCell from "@mui/material/TableCell";
 import Checkbox from "@mui/material/Checkbox";
 import PropTypes from "prop-types";
 import * as React from "react";
-
+import { useEffect } from "react";
 const headCells = [
     {
         id: 'name',
@@ -30,6 +30,14 @@ const headCells = [
 export default function LogTableHead(props) {
     const { onSelectAllClick, numSelected, rowCount } =
         props;
+
+    useEffect(() => {
+        console.log("Количество numSelected:", numSelected);
+    }, [numSelected]);
+
+    useEffect(() => {
+        console.log("Количество rowCount:", rowCount);
+    }, [rowCount]);
 
     return (
         <TableHead>

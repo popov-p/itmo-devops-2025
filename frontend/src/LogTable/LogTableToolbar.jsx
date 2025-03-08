@@ -8,9 +8,66 @@ import DeleteIcon from "@mui/icons-material/Delete.js";
 import PropTypes from "prop-types";
 import * as React from "react";
 
+import { useEffect } from "react";
+import { useSelectedRows, useRows } from "./LogTable";
+import axios from "axios";
 
 export default function LogTableToolbar(props) {
+    const {rows, setRows} = useRows();
+    const { selectedRows, selectRow, selectMultipleRows} = useSelectedRows();
     const { numSelected } = props;
+
+    useEffect(() => {
+        console.log("Количество rows:", rows.length);
+    }, [rows]); 
+
+
+    function handleDelete() {
+        const timeInMicroseconds = performance.now();
+        console.log(`Нажата кнопка Delete, время: ${timeInMicroseconds.toFixed(0)} микросекунд. Selected rows to delete:`, JSON.stringify(selectedRows));
+    
+        const deleteRequests = selectedRows.map(id =>
+            axios.delete(`http://127.0.0.1:8070/api/logentries/${id}`).then(() => id)
+        );
+    
+        Promise.allSettled(deleteRequests)
+            .then(results => {
+                console.log("Все запросы на удаление завершились корректно:", results);
+    
+                const successfullyDeleted = results
+                    .filter(result => result.status === "fulfilled")
+                    .map(result => result.value);
+    
+                if (successfullyDeleted.length > 0) {
+                    setRows(prevRows => prevRows.filter(row => !successfullyDeleted.includes(row.id)));
+                    selectMultipleRows([]);
+                }
+    
+                results.forEach((result, index) => {
+                    if (result.status === "fulfilled") {
+                        console.log(`ID ${result.value} успешно удалён.`);
+                    } else {
+                        console.error(`Ошибка удаления ID ${selectedRows[index]}:`, result.reason);
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Неизвестная ошибка:', error);
+            });
+    }
+    
+
+
+    function handleEdit() {
+        const timeInMicroseconds = performance.now();
+        console.log(`Нажата кнопка Edit, время: ${timeInMicroseconds.toFixed(0)} микросекунд`);
+    }
+
+    function handleAdd() {
+        const timeInMicroseconds = performance.now();
+        console.log(`Нажата кнопка Add, время: ${timeInMicroseconds.toFixed(0)} микросекунд`);
+    };
+
     return (
         <Toolbar
             sx={[
@@ -41,7 +98,7 @@ export default function LogTableToolbar(props) {
             )}
             {numSelected === 0 ? (
                 <Tooltip title="Add">
-                    <IconButton>
+                    <IconButton onClick={handleAdd}>
                         <AddIcon />
                     </IconButton>
                 </Tooltip>
@@ -49,18 +106,18 @@ export default function LogTableToolbar(props) {
                 <>
                     <Tooltip title="Edit">
                         <IconButton>
-                            <EditIcon />
+                            <EditIcon onClick={handleEdit}/>
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Delete">
-                        <IconButton>
+                        <IconButton onClick={handleDelete}>
                             <DeleteIcon />
                         </IconButton>
                     </Tooltip>
                 </>
-            ) : numSelected > 1 ? (
+            ) : numSelected && rows.length !== 0 > 1 ? (
                 <Tooltip title="Delete">
-                    <IconButton>
+                    <IconButton onClick={handleDelete}>
                         <DeleteIcon />
                     </IconButton>
                 </Tooltip>
@@ -73,3 +130,4 @@ export default function LogTableToolbar(props) {
 LogTableToolbar.propTypes = {
     numSelected: PropTypes.number.isRequired,
 };
+
