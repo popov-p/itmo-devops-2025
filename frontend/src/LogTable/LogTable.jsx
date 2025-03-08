@@ -112,13 +112,32 @@ export default function LogTable() {
 
 
     const handleSelectAllClick = (event) => {
-        if (event.target.checked) {
-            const newSelected = rows.map((n) => n.id);
+        console.log('---> handle click', 'is checked:', event.target.checked,
+            ', rows length: ',
+            rows.length, 'selected rows:', selectedRows.length)
+        if (event.target.checked && rows.length === selectedRows.length
+        ) {
+            selectMultipleRows([]);
+            return;
+        }
+        else if (event.target.checked  &&  selectedRows.length === 0) {
+            console.log('---> not checked and selecting all')
+            const newSelected = rows.map((row) => row.id);
             console.log(newSelected);
             selectMultipleRows(newSelected);
             return;
         }
-        selectMultipleRows([]);
+        else if (event.target.checked &&  0 < selectedRows.length < rows.length
+        ) {
+            console.log('---> intermediate')
+            selectMultipleRows([]);
+            return;
+        }
+        else if (!event.target.checked && rows.length === selectedRows.length) {
+            console.log('---> not checked and selected all')
+            selectMultipleRows([]);
+            return;
+        }
     };
 
     const handleChangePage = (event, newPage) => {
