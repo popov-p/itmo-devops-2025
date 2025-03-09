@@ -45,10 +45,10 @@ export default function LogFormDialog({
       let response;
 
       if (idToEdit) {
-        response = await axios.put(`http://localhost:8070/api/logentries/${idToEdit}`, data);
+        response = await axios.put(`http://127.0.0.1:8070/api/logentries/${idToEdit}`, data);
         console.log(`Запись с ID ${idToEdit} обновлена:`, response.data);
       } else {
-        response = await axios.post('http://localhost:8070/api/logentries', data);
+        response = await axios.post('http://127.0.0.1:8070/api/logentries', data);
         console.log('Новая запись создана:', response.data);
       }
 

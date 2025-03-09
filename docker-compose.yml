@@ -22,7 +22,7 @@ services:
     ports:
       - "8070:8070"
     volumes:
-      - backend_src:/backend/src
+      - ./backend/src:/backend/src
     depends_on:
       - mongo
     networks:
@@ -43,7 +43,6 @@ services:
 
 
 volumes:
-  backend_src:
   mongo_data:
 
 networks:
