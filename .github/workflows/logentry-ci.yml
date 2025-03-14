@@ -1,0 +1,44 @@
+name: LogEntryCI
+
+on:
+  push:
+    branches:
+      - ci_cd_integration
+  pull_request:
+    branches:
+      - ci_cd_integration
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Build on ubuntu-22.04
+        run: cd backend/ && chmod +x ./gradlew && ./gradlew build --no-daemon
+
+  test:
+    runs-on: ubuntu-22.04
+    needs: build
+
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Tests on ubuntu-22.04
+        run: cd backend/ && ./gradlew test --no-daemon
