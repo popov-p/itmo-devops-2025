@@ -47,4 +47,4 @@ jobs:
         run: until curl --silent --output /dev/null --fail http://127.0.0.1:8070/api/logentries/health; do echo "Waiting for backend..."; sleep 5; done; echo "Backend is up!"
 
       - name: Tests backend
-        run: cd backend/ && ./gradlew test --no-daemon
+        run: cd backend/ && ./gradlew test --info --no-daemon
