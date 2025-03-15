@@ -7,8 +7,6 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.beans.Transient;
 import java.time.LocalDateTime;
@@ -21,8 +19,6 @@ class LogEntryApplicationTests {
 
     // @LocalServerPort
     // private int port;
-
-	private String logEntryId = "42"; 
 
 	@Autowired
 	private TestRestTemplate restTemplate;
