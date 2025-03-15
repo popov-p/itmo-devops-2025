@@ -9,7 +9,7 @@ on:
       - ci_cd_integration
 
 jobs:
-  build:
+  ubuntu-22-04:
     runs-on: ubuntu-22.04
 
     steps:
@@ -22,33 +22,20 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Build on ubuntu-22.04
-        run: cd backend/ && chmod +x ./gradlew && ./gradlew build -x test --no-daemon
+      # - name: Build backend
+      #   run: cd backend/ && ./gradlew build -x test --no-daemon
 
-  test:
-    runs-on: ubuntu-22.04
-    needs: build
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Install dependencies
-        uses: actions/setup-java@v3
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.12.0
         with:
-          distribution: 'temurin'
-          java-version: '21'
+          mongodb-version: latest
+          mongodb-username: pavel
+          mongodb-password: popov
+          mongodb-container-name: mongo-latest
+          mongodb-port: 27018
 
-      # - name: Run docker
-        # run: docker compose up
+      - name: Run backend 
+        run: cd backend/ && java -jar ./build/libs/backend-0.0.1-SNAPSHOT.jar 
 
-      # - name: Start MongoDB
-      #   uses: supercharge/mongodb-github-action@1.12.0
-      #   with:
-      #     mongodb-version: ${{ matrix.mongodb-version }}
-
-      - name: Run Java project
-        run: java -jar backend/build/libs/backend-0.0.1-SNAPSHOT.jar
-
-      - name: Tests on ubuntu-22.04
+      - name: Tests backend
         run: cd backend/ && ./gradlew test --no-daemon
