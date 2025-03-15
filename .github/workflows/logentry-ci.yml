@@ -12,6 +12,21 @@ jobs:
   ubuntu-22-04:
     runs-on: ubuntu-22.04
 
+    services:
+      mongodb:
+        image: mongo:4.4.6
+        env:
+          MONGO_INITDB_ROOT_USERNAME: pavel
+          MONGO_INITDB_ROOT_PASSWORD: popov
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd mongo
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -22,20 +37,14 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      # - name: Build backend
-      #   run: cd backend/ && ./gradlew build -x test --no-daemon
-
-      - name: Start MongoDB
-        uses: supercharge/mongodb-github-action@1.12.0
-        with:
-          mongodb-version: latest
-          mongodb-username: pavel
-          mongodb-password: popov
-          mongodb-container-name: mongo-latest
-          mongodb-port: 27018
+      - name: Build backend
+        run: cd backend/ && ./gradlew build -x test --no-daemon
 
       - name: Run backend 
-        run: cd backend/ && java -jar ./build/libs/backend-0.0.1-SNAPSHOT.jar 
+        run: cd backend/ && java -jar ./build/libs/backend-0.0.1-SNAPSHOT.jar &
+
+      - name: Wait for backend to be ready
+        run: until curl --silent --output /dev/null --fail http://127.0.0.1:8070/api/logentries/health; do echo "Waiting for backend..."; sleep 5; done; echo "Backend is up!"
 
       - name: Tests backend
         run: cd backend/ && ./gradlew test --no-daemon

@@ -94,6 +94,12 @@ public class LogEntryController {
         }
     }
 
+
+    @GetMapping("/health")
+    public ResponseEntity<String> healthCheck() {
+        return ResponseEntity.status(HttpStatus.OK).body("Backend is up and running");
+    }
+
     private static final Logger logger = LoggerFactory.getLogger(LogEntryController.class);
 
 }
