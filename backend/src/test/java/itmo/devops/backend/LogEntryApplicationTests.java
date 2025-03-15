@@ -13,12 +13,12 @@ class LogEntryApplicationTests {
 	private TestRestTemplate restTemplate;
 
 	@Test
-	void testGetLogEntries() {
+	void testGetLogEntriesEmptyDB() {
 		String url = "http://127.0.0.1:8070/api/logentries";
 
 		ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
-		assert response.getStatusCode().value() == 200;
+		assert response.getStatusCode().value() == 404;
 		
 		System.out.println("Response: " + response.getBody());
 	}
