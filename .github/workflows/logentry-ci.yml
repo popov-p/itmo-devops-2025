@@ -23,7 +23,7 @@ jobs:
           java-version: '21'
 
       - name: Build on ubuntu-22.04
-        run: cd backend/ && chmod +x ./gradlew && ./gradlew build --no-daemon
+        run: cd backend/ && chmod +x ./gradlew && ./gradlew build -x test --no-daemon
 
   test:
     runs-on: ubuntu-22.04
