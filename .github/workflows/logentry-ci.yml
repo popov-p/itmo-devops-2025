@@ -29,7 +29,6 @@ jobs:
     runs-on: ubuntu-22.04
     needs: build
 
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -40,11 +39,16 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Run docker
-        run: docker compose up
+      # - name: Run docker
+        # run: docker compose up
 
-      # - name: Run Java project
-        # run: java -jar backend-0.0.1-SNAPSHOT.jar
+      # - name: Start MongoDB
+      #   uses: supercharge/mongodb-github-action@1.12.0
+      #   with:
+      #     mongodb-version: ${{ matrix.mongodb-version }}
+
+      - name: Run Java project
+        run: java -jar backend/build/libs/backend-0.0.1-SNAPSHOT.jar
 
       - name: Tests on ubuntu-22.04
         run: cd backend/ && ./gradlew test --no-daemon
