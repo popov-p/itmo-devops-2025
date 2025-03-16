@@ -9,7 +9,7 @@ on:
       - ci_cd_integration
 
 jobs:
-  ubuntu-22-04:
+  backend-ubuntu-22-04:
     runs-on: ubuntu-22.04
 
     services:
@@ -48,3 +48,23 @@ jobs:
 
       - name: Tests backend
         run: cd backend/ && ./gradlew test --info --no-daemon
+
+
+  frontend-ubuntu-22-04:
+    runs-on: ubuntu-22.04
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: cd frontend && npm install
+
+      - name: Run tests
+        run: cd frontend && npm test -- --run
