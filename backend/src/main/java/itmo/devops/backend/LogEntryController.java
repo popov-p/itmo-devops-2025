@@ -94,6 +94,12 @@ public class LogEntryController {
         }
     }
 
+    @DeleteMapping("/all")
+    public ResponseEntity<Void> deleteAllLogEntries() {
+        logEntryService.deleteAll();
+        return ResponseEntity.noContent().build();
+    }
+
 
     @GetMapping("/health")
     public ResponseEntity<String> healthCheck() {

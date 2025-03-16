@@ -40,6 +40,11 @@ public class LogEntryService {
         return true;
     }
 
+    public void deleteAll() {
+        logEntryRepository.deleteAll();
+    }
+
+
     private static final Logger logger = LoggerFactory.getLogger(LogEntryService.class);
 
 }
