@@ -9,7 +9,34 @@ on:
       - ci_cd_integration
 
 jobs:
-  backend-ubuntu-22-04:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install backend dependencies
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+      
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+  
+      - name: Install frontend dependencies
+        run: cd frontend && npm install
+
+      - name: Build backend
+        run: cd backend/ && ./gradlew build -x test --no-daemon
+      
+      - name: Build frontend
+        run: cd frontend/ && npm run build --if-present
+
+  test:
     runs-on: ubuntu-22.04
 
     services:
@@ -25,21 +52,28 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-    
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install dependencies
+      - name: Install backend dependencies
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '21'
+      
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+  
+      - name: Install frontend dependencies
+        run: cd frontend && npm install
 
       - name: Build backend
         run: cd backend/ && ./gradlew build -x test --no-daemon
-
+        
       - name: Run backend 
         run: cd backend/ && java -jar ./build/libs/backend-0.0.1-SNAPSHOT.jar &
 
@@ -49,22 +83,5 @@ jobs:
       - name: Tests backend
         run: cd backend/ && ./gradlew test --info --no-daemon
 
-
-  frontend-ubuntu-22-04:
-    runs-on: ubuntu-22.04
-
-    steps:
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Install dependencies
-        run: cd frontend && npm install
-
-      - name: Run tests
+      - name: Tests frontend
         run: cd frontend && npm test -- --run
