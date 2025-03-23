@@ -20,7 +20,7 @@ resource "yandex_compute_disk" "boot-disk-1" {
 }
 
 resource "yandex_compute_instance" "vm-1" {
-  name = "terraform1"
+  name = "vm-1"
 
   resources {
     cores  = 2

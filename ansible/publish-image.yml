@@ -1,0 +1,46 @@
+- name: Deploy and push Docker image
+  hosts: all
+  become: true
+  vars:
+    repo_url: "https://github.com/popov-p/itmo-devops-2025"
+    branch: "ci_cd_integration"
+    project_dir: "/home/{{ ansible_user }}/devel/itmo-devops-2025"
+    docker_image_name: "pavel5926/itmo-devops-2025"
+    dockerhub_username: "pavel5926"
+    dockerhub_password: "{{ dockerhub_password }}"
+
+  tasks:
+    - name: Clone or update repository
+      git:
+        repo: "{{ repo_url }}"
+        dest: "{{ project_dir }}"
+        version: "{{ branch }}"
+        update: yes
+
+    - name: Checkout to the required branch
+      command:
+        cmd: "git checkout {{ branch }}"
+      args:
+        chdir: "{{ project_dir }}"
+
+    - name: Pull latest changes
+      command:
+        cmd: "git pull"
+      args:
+        chdir: "{{ project_dir }}"
+
+    - name: Build Docker image
+      command:
+        cmd: "docker compose build"
+      args:
+        chdir: "{{ project_dir }}"
+
+    - name: Log in to Docker Hub
+      command: >
+        docker login -u {{ dockerhub_username }} -p {{ dockerhub_password }}
+
+    - name: Push Docker image to Docker Hub
+      command:
+        cmd: "docker compose push"
+      args:
+        chdir: "{{ project_dir }}"
