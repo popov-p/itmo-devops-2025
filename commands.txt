@@ -1,0 +1,18 @@
+kompose convert -f ./docker-compose.yml -o ./minikube
+kubectl exec -it frontend -- /bin/sh
+kubectl port-forward pod/frontend 5173:5173
+kubectl port-forward pod/backend 8070:8070
+kubectl get pods
+minikube dashboard
+kubectl apply -f ./minikube/
+minikube start --driver=docker
+kubectl delete all --all
+kubectl get hpa
+
+kubectl get pod -l app=backend
+kubectl top pod backend
+kubectl get pod backend
+kubectl top pod -l app=backend && kubectl get pod -l app=backend
+kubectl get svc backend
+
+https://medium.com/@cloudspinx/fix-error-metrics-api-not-available-in-kubernetes-aa10766e1c2f

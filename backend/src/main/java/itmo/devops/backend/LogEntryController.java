@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 
 @RestController
 @RequestMapping("/api/logentries")
@@ -20,8 +22,15 @@ public class LogEntryController {
     @Autowired
     private LogEntryService logEntryService;
 
+    private final Counter getAllLogentriesRequestCounter;
+
+    public LogEntryController(MeterRegistry registry) {
+        this.getAllLogentriesRequestCounter = registry.counter("logentries_get_requests_total", "type", "GET");
+    }
+
     @GetMapping
     public ResponseEntity<List<LogEntry>> getAllLogEntries() {
+        getAllLogentriesRequestCounter.increment();
         List<LogEntry> logEntries = logEntryService.getAllLogEntries();
         if (logEntries.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

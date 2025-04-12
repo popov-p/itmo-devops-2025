@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  containers:
+    - image: pavel5926/devel-frontend:latest
+      name: frontend
+      ports:
+        - containerPort: 5173
+          protocol: TCP
+  restartPolicy: OnFailure
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  type: NodePort
+  ports:
+    - name: "5173"
+      port: 5173
+      targetPort: 5173
+      nodePort: 30173
+  selector:
+    app: frontend

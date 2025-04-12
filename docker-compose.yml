@@ -2,8 +2,8 @@ services:
   frontend:
     build:
       context: ./frontend
-    image: pavel5926/devel-frontend:latest
     restart: on-failure
+    image: pavel5926/devel-frontend:latest
     ports:
       - "5173:5173"
     volumes:
@@ -19,8 +19,8 @@ services:
   backend:
     build:
       context: ./backend
-    image: pavel5926/devel-backend:latest
     restart: on-failure
+    image: pavel5926/devel-backend:latest
     ports:
       - "8070:8070"
     volumes:

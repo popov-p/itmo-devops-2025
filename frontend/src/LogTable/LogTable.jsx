@@ -43,7 +43,7 @@ export default function LogTable() {
     }, [rows]);
 
     useEffect(() => {
-        axios.get('http://127.0.0.1:8070/api/logentries')
+        axios.get('http://192.168.59.100:30070/api/logentries')
             .then((response) => {
                 setRows(response.data.reverse());
                 setLoading(false);
