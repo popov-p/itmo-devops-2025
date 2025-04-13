@@ -15,4 +15,6 @@ kubectl get pod backend
 kubectl top pod -l app=backend && kubectl get pod -l app=backend
 kubectl get svc backend
 
+kubectl get svc backend-metrics
+
 https://medium.com/@cloudspinx/fix-error-metrics-api-not-available-in-kubernetes-aa10766e1c2f

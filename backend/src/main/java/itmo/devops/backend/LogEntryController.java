@@ -14,6 +14,7 @@ import java.util.Optional;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
+import org.springframework.beans.factory.annotation.Value;
 
 @RestController
 @RequestMapping("/api/logentries")
@@ -24,8 +25,11 @@ public class LogEntryController {
 
     private final Counter getAllLogentriesRequestCounter;
 
-    public LogEntryController(MeterRegistry registry) {
-        this.getAllLogentriesRequestCounter = registry.counter("logentries_get_requests_total", "type", "GET");
+    public LogEntryController(MeterRegistry registry, @Value("${POD_NAME:unknown}") String podName) {
+        this.getAllLogentriesRequestCounter = Counter.builder("logentries_get_requests_total")
+                                                      .tag("type", "GET")
+                                                      .tag("pod", podName)
+                                                      .register(registry);
     }
 
     @GetMapping
