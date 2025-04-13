@@ -15,7 +15,7 @@ resource "yandex_compute_disk" "boot-disk-1" {
   name     = "boot-disk-1"
   type     = "network-hdd"
   zone     = "ru-central1-a"
-  size     = "20"
+  size     = "30"
   image_id = "fd80ok8sil1fn2gqbm6h"
 }
 
@@ -23,8 +23,8 @@ resource "yandex_compute_instance" "vm-1" {
   name = "vm-1"
 
   resources {
-    cores  = 2
-    memory = 2
+    cores  = 8
+    memory = 8
   }
 
   boot_disk {
