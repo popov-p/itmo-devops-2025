@@ -17,7 +17,19 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.List;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Arrays;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class LogEntryControllerTests {
@@ -29,6 +41,12 @@ class LogEntryControllerTests {
 
 	private MockMvc mockMvc;
 
+	@MockBean
+    private LogEntryService logEntryService;
+
+	@Autowired
+    private LogEntryController logEntryController;
+
 	@Autowired
 	private WebApplicationContext webApplicationContext;
 
@@ -37,191 +55,158 @@ class LogEntryControllerTests {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
-	@BeforeEach
-	void clearDatabase() {
-		String url = "http://localhost:8070/api/logentries/all";
-		ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.DELETE, null, Void.class);
-
-		assertEquals(204, response.getStatusCode().value());
-	}
-
 	@Test
     void contextLoads() {
     }
-
-	// @Test
-	// void testGetLogEntriesEmptyDB() {
-	// 	String url = "http://localhost:8070/api/logentries";
-
-	// 	ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-
-	// 	assert response.getStatusCode().value() == 404;
-
-	// 	System.out.println("Response: " + response.getBody());
-	// }
-
-	// @Test
-	// void testGetLogEntriesNotEmptyDB() {
-	// 	String url = "http://localhost:8070/api/logentries";
-
-	// 	String jsonBody = "{\n" +
-	// 			"    \"employeeName\": \"Pavel Popov\",\n" +
-	// 			"    \"logMessage\": \"Hello world\"\n" +
-	// 			"}";
-
-	// 	HttpHeaders headers = new HttpHeaders();
-	// 	headers.set("Content-Type", "application/json");
-
-	// 	HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
-
-	// 	ResponseEntity<String> post_response = restTemplate
-	// 			.postForEntity(url, entity, String.class);
-
-	// 	assertEquals(201, post_response.getStatusCode().value());
-
-	// 	ResponseEntity<String> get_response = restTemplate.getForEntity(url, String.class);
-
-	// 	assert get_response.getStatusCode().value() == 200;
-
-	// 	System.out.println("Response: " + get_response.getBody());
-	// }
-
-	// @Test
-	// void testCreateLogEntry() {
-	// 	String url = "http://localhost:8070/api/logentries";
-
-	// 	String jsonBody = "{\n" +
-	// 			"    \"employeeName\": \"Pavel Popov\",\n" +
-	// 			"    \"logMessage\": \"Hello world\"\n" +
-	// 			"}";
-
-	// 	HttpHeaders headers = new HttpHeaders();
-	// 	headers.set("Content-Type", "application/json");
-
-	// 	HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
-
-	// 	ResponseEntity<String> response = restTemplate
-	// 			.postForEntity(url, entity, String.class);
-
-	// 	assertEquals(201, response.getStatusCode().value());
-
-	// 	System.out.println("Response: " + response.getBody());
-	// }
-
-	// @Test
-	// void testUpdateLogEntry() throws Exception {
-	// 	String url = "http://localhost:8070/api/logentries";
-
-	// 	// Создаём запись
-	// 	String jsonBody = "{\n" +
-	// 			"    \"id\": 1,\n" +
-	// 			"    \"employeeName\": \"Pavel Popov\",\n" +
-	// 			"    \"logMessage\": \"Hello world\"\n" +
-	// 			"}";
-
-	// 	HttpHeaders headers = new HttpHeaders();
-	// 	headers.setContentType(MediaType.APPLICATION_JSON);
-
-	// 	HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
-	// 	ResponseEntity<String> postResponse = restTemplate.postForEntity(url, entity, String.class);
-	// 	assertEquals(201, postResponse.getStatusCode().value());
-
-	// 	String updateUrl = url + "/1";
-
-	// 	String updatedJsonBody = "{\n" +
-	// 			"    \"id\": 1,\n" +
-	// 			"    \"employeeName\": \"Pavel Popov\",\n" +
-	// 			"    \"logMessage\": \"Updated message\"\n" +
-	// 			"}";
-
-	// 	HttpEntity<String> updateEntity = new HttpEntity<>(updatedJsonBody, headers);
-	// 	ResponseEntity<String> putResponse = restTemplate.exchange(updateUrl, HttpMethod.PUT, updateEntity, String.class);
-	// 	assertEquals(200, putResponse.getStatusCode().value());
-
-	// 	JsonNode jsonNode = objectMapper.readTree(putResponse.getBody());
-	// 	String actualLogMessage = jsonNode.get("logMessage").asText();
-
-	// 	assertEquals("Updated message", actualLogMessage, "logMessage не обновился!");
-
-	// 	System.out.println("Updated Response: " + putResponse.getBody());
-	// }
-
-	// @Test
-	// void testDeleteLogEntry() throws Exception {
-	// 	String url = "http://localhost:8070/api/logentries";
-	// 	String logId = "1";
-
-	// 	String jsonBody = "{\n" +
-	// 			"    \"id\": " + logId + ",\n" +
-	// 			"    \"employeeName\": \"Pavel Popov\",\n" +
-	// 			"    \"logMessage\": \"Hello world\"\n" +
-	// 			"}";
-
-	// 	HttpHeaders headers = new HttpHeaders();
-	// 	headers.setContentType(MediaType.APPLICATION_JSON);
-
-	// 	HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
-	// 	ResponseEntity<String> postResponse = restTemplate.postForEntity(url, entity, String.class);
-	// 	assertEquals(201, postResponse.getStatusCode().value(), "Запись не была создана!");
-
-	// 	String deleteUrl = url + "/" + logId;
-
-	// 	ResponseEntity<Void> deleteResponse = restTemplate.exchange(deleteUrl, HttpMethod.DELETE, null, Void.class);
-	// 	assertEquals(204, deleteResponse.getStatusCode().value(), "Запись не удалилась!");
-
-	// 	ResponseEntity<String> getResponse = restTemplate.getForEntity(deleteUrl, String.class);
-	// 	assertEquals(404, getResponse.getStatusCode().value(), "Удалённая запись всё ещё существует!");
-
-	// 	System.out.println("Delete Response: " + deleteResponse.getStatusCode());
-	// }
-
-	// @Test
-	// void testCreateUpdateAndDeleteLogEntry() throws Exception {
-	// 	String url = "http://localhost:8070/api/logentries";
-	// 	String logId = "1";
-
-	// 	// 1️⃣ Создаём запись
-	// 	String jsonBody = "{\n" +
-	// 			"    \"id\": " + logId + ",\n" +
-	// 			"    \"employeeName\": \"Pavel Popov\",\n" +
-	// 			"    \"logMessage\": \"Hello world\"\n" +
-	// 			"}";
-
-	// 	HttpHeaders headers = new HttpHeaders();
-	// 	headers.setContentType(MediaType.APPLICATION_JSON);
-
-	// 	HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
-	// 	ResponseEntity<String> postResponse = restTemplate.postForEntity(url, entity, String.class);
-	// 	assertEquals(201, postResponse.getStatusCode().value(), "Запись не была создана!");
-
-	// 	String updateUrl = url + "/" + logId;
-	// 	String updatedJsonBody = "{\n" +
-	// 			"    \"id\": " + logId + ",\n" +
-	// 			"    \"employeeName\": \"Pavel Popov\",\n" +
-	// 			"    \"logMessage\": \"Updated message\"\n" +
-	// 			"}";
-
-	// 	HttpEntity<String> updateEntity = new HttpEntity<>(updatedJsonBody, headers);
-	// 	ResponseEntity<String> putResponse = restTemplate.exchange(updateUrl, HttpMethod.PUT, updateEntity, String.class);
-	// 	assertEquals(200, putResponse.getStatusCode().value(), "Обновление не прошло!");
-
-	// 	JsonNode jsonNode = objectMapper.readTree(putResponse.getBody());
-	// 	String actualLogMessage = jsonNode.get("logMessage").asText();
-	// 	assertEquals("Updated message", actualLogMessage, "logMessage не обновился!");
-
-	// 	ResponseEntity<Void> deleteResponse = restTemplate.exchange(updateUrl, HttpMethod.DELETE, null, Void.class);
-	// 	assertEquals(204, deleteResponse.getStatusCode().value(), "Запись не удалилась!");
-
-	// 	ResponseEntity<String> getResponse = restTemplate.getForEntity(updateUrl, String.class);
-	// 	assertEquals(404, getResponse.getStatusCode().value(), "Удалённая запись всё ещё существует!");
-
-	// 	System.out.println("Delete Response: " + deleteResponse.getStatusCode());
-	// }
 
 	@Test
     public void testGetAllLogEntries() throws Exception {
         mockMvc.perform(get("/api/logentries"))
             .andExpect(status().isNotFound());
+    }
+
+	@Test
+    public void testGetAllLogEntriesReturnsOk() throws Exception {
+        LogEntry mockEntry = new LogEntry("1", "Alice", "Test message", LocalDateTime.now());
+        List<LogEntry> entries = Collections.singletonList(mockEntry);
+
+        Mockito.when(logEntryService.getAllLogEntries()).thenReturn(entries);
+
+        mockMvc.perform(get("/api/logentries"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].employeeName").value("Alice"))
+                .andExpect(jsonPath("$[0].logMessage").value("Test message"));
+    }
+
+	@Test
+    public void testGetLogByIdReturnsOk() throws Exception {
+        LogEntry mockLogEntry = new LogEntry("1", "Alice", "Test message", LocalDateTime.now());
+        when(logEntryService.getLogEntryById("1")).thenReturn(Optional.of(mockLogEntry));
+
+        mockMvc.perform(get("/api/logentries/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.employeeName").value("Alice"))
+                .andExpect(jsonPath("$.logMessage").value("Test message"));
+    }
+
+	@Test
+    public void testCreateLogReturnsCreated() throws Exception {
+        LogEntry mockLogEntry = new LogEntry("1", "Alice", "Test message", LocalDateTime.now());
+        
+        when(logEntryService.saveLogEntry(mockLogEntry)).thenReturn(mockLogEntry);
+
+        mockMvc.perform(post("/api/logentries")
+                .contentType("application/json")
+                .content("{ \"employeeName\": \"Alice\", \"logMessage\": \"Test message\" }"));
+    }
+
+	@Test
+	public void testUpdateLogEntryReturnsOk() throws Exception {
+		String logId = "1";
+		LogEntry existingLogEntry = new LogEntry(logId, "Alice", "Old message", LocalDateTime.now());
+		LogEntry updatedLogEntry = new LogEntry(logId, "Alice", "Updated message", LocalDateTime.now());
+
+		when(logEntryService.getLogEntryById(logId)).thenReturn(Optional.of(existingLogEntry));
+
+		when(logEntryService.saveLogEntry(Mockito.any(LogEntry.class))).thenReturn(updatedLogEntry);
+
+		mockMvc.perform(put("/api/logentries/{id}", logId)
+				.contentType("application/json")
+				.content("{\"employeeName\": \"Alice\", \"logMessage\": \"Updated message\"}"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.employeeName").value("Alice"))
+				.andExpect(jsonPath("$.logMessage").value("Updated message"));
+	}
+
+	@Test
+	public void testUpdateLogEntryReturnsNotFound() throws Exception {
+    String logId = "1";
+    LogEntry updatedLogEntry = new LogEntry(logId, "Alice", "Updated message", LocalDateTime.now());
+
+    when(logEntryService.getLogEntryById(logId)).thenReturn(Optional.empty());
+
+    mockMvc.perform(put("/api/logentries/{id}", logId)
+            .contentType("application/json")
+            .content("{\"employeeName\": \"Alice\", \"logMessage\": \"Updated message\"}"))
+            .andExpect(status().isNotFound());
+	}
+
+
+	@Test
+	public void testDeleteLogEntryReturnsNoContent() throws Exception {
+		String logId = "1";
+
+		when(logEntryService.deleteLogEntryById(logId)).thenReturn(true);
+
+		mockMvc.perform(delete("/api/logentries/{id}", logId))
+				.andExpect(status().isNoContent());
+	}
+
+	@Test
+	public void testDeleteLogEntryReturnsNotFound() throws Exception {
+		String logId = "1";
+
+		when(logEntryService.deleteLogEntryById(logId)).thenReturn(false);
+
+		mockMvc.perform(delete("/api/logentries/{id}", logId))
+				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	public void testDeleteLogEntriesReturnsOk() throws Exception {
+		List<String> ids = Arrays.asList("1", "2", "3");
+
+		when(logEntryService.deleteLogEntryById("1")).thenReturn(true);
+		when(logEntryService.deleteLogEntryById("2")).thenReturn(true);
+		when(logEntryService.deleteLogEntryById("3")).thenReturn(true);
+
+		mockMvc.perform(delete("/api/logentries")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(ids)));
+	}
+
+	@Test
+	public void testDeleteLogEntriesReturnsBadRequest() throws Exception {
+		List<String> ids = Arrays.asList("1", "2", "3");
+
+		when(logEntryService.deleteLogEntryById("1")).thenReturn(true);
+		when(logEntryService.deleteLogEntryById("2")).thenReturn(false);
+		when(logEntryService.deleteLogEntryById("3")).thenReturn(true);
+
+		mockMvc.perform(delete("/api/logentries")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(ids)));
+	}
+
+	@Test
+    public void testDeleteLogEntries() {
+        when(logEntryService.deleteLogEntryById("1")).thenReturn(true);
+        when(logEntryService.deleteLogEntryById("2")).thenReturn(true);
+
+        ResponseEntity<String> response = logEntryController.deleteLogEntries(Arrays.asList("1", "2"));
+
+        System.out.println(response.getStatusCode());
+        System.out.println(response.getBody());
+    }
+
+	@Test
+    public void testDeleteLogEntries_someFailed_errorResponse() {
+        when(logEntryService.deleteLogEntryById("1")).thenReturn(true);
+        when(logEntryService.deleteLogEntryById("2")).thenReturn(false);
+
+        ResponseEntity<String> response = logEntryController.deleteLogEntries(Arrays.asList("1", "2"));
+
+        System.out.println(response.getStatusCode());
+        System.out.println(response.getBody());
+    }
+
+	@Test
+    public void testDeleteAllLogEntries() {
+        ResponseEntity<Void> response = logEntryController.deleteAllLogEntries();
+
+        verify(logEntryService, times(1)).deleteAll();
+
+        System.out.println(response.getStatusCode());
     }
 	
 }
