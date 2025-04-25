@@ -20,7 +20,7 @@ class LogEntryControllerTests {
 
 	@BeforeEach
 	void clearDatabase() {
-		String url = "http://127.0.0.1:8070/api/logentries/all";
+		String url = "http://localhost:8070/api/logentries/all";
 		ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.DELETE, null, Void.class);
 
 		assertEquals(204, response.getStatusCode().value());
@@ -28,7 +28,7 @@ class LogEntryControllerTests {
 
 	@Test
 	void testGetLogEntriesEmptyDB() {
-		String url = "http://127.0.0.1:8070/api/logentries";
+		String url = "http://localhost:8070/api/logentries";
 
 		ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
@@ -39,7 +39,7 @@ class LogEntryControllerTests {
 
 	@Test
 	void testGetLogEntriesNotEmptyDB() {
-		String url = "http://127.0.0.1:8070/api/logentries";
+		String url = "http://localhost:8070/api/logentries";
 
 		String jsonBody = "{\n" +
 				"    \"employeeName\": \"Pavel Popov\",\n" +
@@ -65,7 +65,7 @@ class LogEntryControllerTests {
 
 	@Test
 	void testCreateLogEntry() {
-		String url = "http://127.0.0.1:8070/api/logentries";
+		String url = "http://localhost:8070/api/logentries";
 
 		String jsonBody = "{\n" +
 				"    \"employeeName\": \"Pavel Popov\",\n" +
@@ -87,7 +87,7 @@ class LogEntryControllerTests {
 
 	@Test
 	void testUpdateLogEntry() throws Exception {
-		String url = "http://127.0.0.1:8070/api/logentries";
+		String url = "http://localhost:8070/api/logentries";
 
 		// Создаём запись
 		String jsonBody = "{\n" +
@@ -125,7 +125,7 @@ class LogEntryControllerTests {
 
 	@Test
 	void testDeleteLogEntry() throws Exception {
-		String url = "http://127.0.0.1:8070/api/logentries";
+		String url = "http://localhost:8070/api/logentries";
 		String logId = "1";
 
 		String jsonBody = "{\n" +
@@ -154,7 +154,7 @@ class LogEntryControllerTests {
 
 	@Test
 	void testCreateUpdateAndDeleteLogEntry() throws Exception {
-		String url = "http://127.0.0.1:8070/api/logentries";
+		String url = "http://localhost:8070/api/logentries";
 		String logId = "1";
 
 		// 1️⃣ Создаём запись
