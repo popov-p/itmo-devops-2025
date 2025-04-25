@@ -52,8 +52,6 @@ jobs:
           --health-interval 2s
           --health-timeout 2s
           --health-retries 5
-        networks:
-          - default
 
     steps:
       - name: Checkout repository
@@ -80,7 +78,7 @@ jobs:
         run: cd backend/ && java -jar ./build/libs/backend-0.0.1-SNAPSHOT.jar &
 
       - name: Wait for backend to be ready
-        run: until curl --silent --output /dev/null --fail http://mongo:8070/api/logentries/health; do echo "Waiting for backend..."; sleep 5; done; echo "Backend is up!"
+        run: until curl --silent --output /dev/null --fail http://127.0.0.1:8070/api/logentries/health; do echo "Waiting for backend..."; sleep 5; done; echo "Backend is up!"
 
       - name: Tests backend
         run: cd backend/ && ./gradlew test --info --no-daemon
