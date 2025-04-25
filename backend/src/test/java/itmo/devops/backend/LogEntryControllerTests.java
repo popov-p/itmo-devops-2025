@@ -27,6 +27,10 @@ class LogEntryControllerTests {
 	}
 
 	@Test
+    void contextLoads() {
+    }
+
+	@Test
 	void testGetLogEntriesEmptyDB() {
 		String url = "http://localhost:8070/api/logentries";
 

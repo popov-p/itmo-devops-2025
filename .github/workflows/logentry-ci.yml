@@ -36,60 +36,60 @@ jobs:
   #     - name: Build frontend
   #       run: cd frontend/ && npm run build --if-present
 
-  # test:
-  #   runs-on: ubuntu-22.04
+  test:
+    runs-on: ubuntu-22.04
 
-  #   services:
-  #     mongo:
-  #       image: mongo:4.4.6
-  #       env:
-  #         MONGO_INITDB_ROOT_USERNAME: pavel
-  #         MONGO_INITDB_ROOT_PASSWORD: popov
-  #       ports:
-  #         - 27017:27017
-  #       options: >-
-  #         --health-cmd mongo
-  #         --health-interval 2s
-  #         --health-timeout 2s
-  #         --health-retries 5
+    services:
+      mongo:
+        image: mongo:4.4.6
+        env:
+          MONGO_INITDB_ROOT_USERNAME: pavel
+          MONGO_INITDB_ROOT_PASSWORD: popov
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd mongo
+          --health-interval 2s
+          --health-timeout 2s
+          --health-retries 5
 
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  #     - name: Install backend dependencies
-  #       uses: actions/setup-java@v3
-  #       with:
-  #         distribution: 'temurin'
-  #         java-version: '21'
+      - name: Install backend dependencies
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
       
-  #     - name: Install Node.js
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: '18'
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
   
-  #     - name: Install frontend dependencies
-  #       run: cd frontend && npm install
+      - name: Install frontend dependencies
+        run: cd frontend && npm install
 
-  #     - name: Build backend
-  #       run: cd backend/ && ./gradlew build -x test --no-daemon
+      - name: Build backend
+        run: cd backend/ && ./gradlew build -x test --no-daemon
         
-  #     - name: Run backend 
-  #       run: cd backend/ && java -jar ./build/libs/backend-0.0.1-SNAPSHOT.jar &
+      - name: Run backend 
+        run: cd backend/ && java -jar ./build/libs/backend-0.0.1-SNAPSHOT.jar &
 
-  #     - name: Wait for backend to be ready
-  #       run: until curl --silent --output /dev/null --fail http://127.0.0.1:8070/api/logentries/health; do echo "Waiting for backend..."; sleep 5; done; echo "Backend is up!"
+      - name: Wait for backend to be ready
+        run: until curl --silent --output /dev/null --fail http://127.0.0.1:8070/api/logentries/health; do echo "Waiting for backend..."; sleep 5; done; echo "Backend is up!"
 
-  #     - name: Tests backend
-  #       run: cd backend/ && ./gradlew test --info --no-daemon
+      - name: Tests backend
+        run: cd backend/ && ./gradlew test --info --no-daemon
 
-  #     - name: Tests frontend
-  #       run: cd frontend && npm test -- --run
+      - name: Tests frontend
+        run: cd frontend && npm test -- --run
 
   sonarqube_scan:
     name: sonar scan
     runs-on: ubuntu-22.04
-    # needs: test
+    needs: test
 
     steps:
       - uses: actions/checkout@v4
@@ -119,14 +119,9 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle
 
       - name: SonarQube Scan
-        uses: sonarsource/sonarqube-scan-action@v2
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        with:
-          projectBaseDir: ./backend
-          args: >
-            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
-            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION_KEY }}
-            -Dsonar.java.binaries=**/build/classes
-            -Dsonar.coverage.jacoco.xmlReportPaths=**/build/reports/jacoco/test/jacocoTestReport.xml
+        run: |
+          cd backend
+          ./gradlew sonar --info
