@@ -29,3 +29,4 @@ tf/key.json
 tf/terraform.tfstate.backup
 
 data/
+./set-sonar-env.sh
