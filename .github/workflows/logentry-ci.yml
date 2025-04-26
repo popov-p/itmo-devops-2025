@@ -102,7 +102,7 @@ jobs:
           cd backend
           ./gradlew extractCoverage
 
-      - name: SonarQube Scan Backend
+      - name: SonarQube Scan Frontend
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
