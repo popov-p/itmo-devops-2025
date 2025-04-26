@@ -84,8 +84,12 @@ jobs:
           SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
           SONAR_ORGANIZATION_KEY: ${{ secrets.SONAR_ORGANIZATION_KEY }}
         run: |
+          echo "SONAR_TOKEN=$SONAR_TOKEN"
+          echo "SONAR_HOST_URL=$SONAR_HOST_URL"
+          echo "SONAR_PROJECT_KEY=$SONAR_PROJECT_KEY"
+          echo "SONAR_ORGANIZATION_KEY=$SONAR_ORGANIZATION_KEY"
           cd backend
-          ./gradlew clean jacocoTestReport sonar
+          ./gradlew clean jacocoTestReport sonar --info
 
       # - name: Check Coverage Percentage
       #   run: |

@@ -31,182 +31,182 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.Arrays;
 
-// @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-// class LogEntryControllerTests {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+class LogEntryControllerTests {
 
-// 	@Autowired
-// 	private TestRestTemplate restTemplate;
+	@Autowired
+	private TestRestTemplate restTemplate;
 
-// 	private final ObjectMapper objectMapper = new ObjectMapper();
+	private final ObjectMapper objectMapper = new ObjectMapper();
 
-// 	private MockMvc mockMvc;
+	private MockMvc mockMvc;
 
-// 	@MockBean
-//     private LogEntryService logEntryService;
+	@MockBean
+    private LogEntryService logEntryService;
 
-// 	@Autowired
-//     private LogEntryController logEntryController;
+	@Autowired
+    private LogEntryController logEntryController;
 
-// 	@Autowired
-// 	private WebApplicationContext webApplicationContext;
+	@Autowired
+	private WebApplicationContext webApplicationContext;
 
-// 	@BeforeEach
-//     public void setup() {
-//         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-//     }
+	@BeforeEach
+    public void setup() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+    }
 
-// 	@Test
-//     void contextLoads() {
-//     }
+	@Test
+    void contextLoads() {
+    }
 
-// 	@Test
-//     public void testGetAllLogEntries() throws Exception {
-//         mockMvc.perform(get("/api/logentries"))
-//             .andExpect(status().isNotFound());
-//     }
+	@Test
+    public void testGetAllLogEntries() throws Exception {
+        mockMvc.perform(get("/api/logentries"))
+            .andExpect(status().isNotFound());
+    }
 
-// 	@Test
-//     public void testGetAllLogEntriesReturnsOk() throws Exception {
-//         LogEntry mockEntry = new LogEntry("1", "Alice", "Test message", LocalDateTime.now());
-//         List<LogEntry> entries = Collections.singletonList(mockEntry);
+	@Test
+    public void testGetAllLogEntriesReturnsOk() throws Exception {
+        LogEntry mockEntry = new LogEntry("1", "Alice", "Test message", LocalDateTime.now());
+        List<LogEntry> entries = Collections.singletonList(mockEntry);
 
-//         Mockito.when(logEntryService.getAllLogEntries()).thenReturn(entries);
+        Mockito.when(logEntryService.getAllLogEntries()).thenReturn(entries);
 
-//         mockMvc.perform(get("/api/logentries"))
-//                 .andExpect(status().isOk())
-//                 .andExpect(jsonPath("$[0].employeeName").value("Alice"))
-//                 .andExpect(jsonPath("$[0].logMessage").value("Test message"));
-//     }
+        mockMvc.perform(get("/api/logentries"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].employeeName").value("Alice"))
+                .andExpect(jsonPath("$[0].logMessage").value("Test message"));
+    }
 
-// 	@Test
-//     public void testGetLogByIdReturnsOk() throws Exception {
-//         LogEntry mockLogEntry = new LogEntry("1", "Alice", "Test message", LocalDateTime.now());
-//         when(logEntryService.getLogEntryById("1")).thenReturn(Optional.of(mockLogEntry));
+	@Test
+    public void testGetLogByIdReturnsOk() throws Exception {
+        LogEntry mockLogEntry = new LogEntry("1", "Alice", "Test message", LocalDateTime.now());
+        when(logEntryService.getLogEntryById("1")).thenReturn(Optional.of(mockLogEntry));
 
-//         mockMvc.perform(get("/api/logentries/1"))
-//                 .andExpect(status().isOk())
-//                 .andExpect(jsonPath("$.employeeName").value("Alice"))
-//                 .andExpect(jsonPath("$.logMessage").value("Test message"));
-//     }
+        mockMvc.perform(get("/api/logentries/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.employeeName").value("Alice"))
+                .andExpect(jsonPath("$.logMessage").value("Test message"));
+    }
 
-// 	@Test
-//     public void testCreateLogReturnsCreated() throws Exception {
-//         LogEntry mockLogEntry = new LogEntry("1", "Alice", "Test message", LocalDateTime.now());
+	@Test
+    public void testCreateLogReturnsCreated() throws Exception {
+        LogEntry mockLogEntry = new LogEntry("1", "Alice", "Test message", LocalDateTime.now());
         
-//         when(logEntryService.saveLogEntry(mockLogEntry)).thenReturn(mockLogEntry);
+        when(logEntryService.saveLogEntry(mockLogEntry)).thenReturn(mockLogEntry);
 
-//         mockMvc.perform(post("/api/logentries")
-//                 .contentType("application/json")
-//                 .content("{ \"employeeName\": \"Alice\", \"logMessage\": \"Test message\" }"));
-//     }
+        mockMvc.perform(post("/api/logentries")
+                .contentType("application/json")
+                .content("{ \"employeeName\": \"Alice\", \"logMessage\": \"Test message\" }"));
+    }
 
-// 	@Test
-// 	public void testUpdateLogEntryReturnsOk() throws Exception {
-// 		String logId = "1";
-// 		LogEntry existingLogEntry = new LogEntry(logId, "Alice", "Old message", LocalDateTime.now());
-// 		LogEntry updatedLogEntry = new LogEntry(logId, "Alice", "Updated message", LocalDateTime.now());
+	@Test
+	public void testUpdateLogEntryReturnsOk() throws Exception {
+		String logId = "1";
+		LogEntry existingLogEntry = new LogEntry(logId, "Alice", "Old message", LocalDateTime.now());
+		LogEntry updatedLogEntry = new LogEntry(logId, "Alice", "Updated message", LocalDateTime.now());
 
-// 		when(logEntryService.getLogEntryById(logId)).thenReturn(Optional.of(existingLogEntry));
+		when(logEntryService.getLogEntryById(logId)).thenReturn(Optional.of(existingLogEntry));
 
-// 		when(logEntryService.saveLogEntry(Mockito.any(LogEntry.class))).thenReturn(updatedLogEntry);
+		when(logEntryService.saveLogEntry(Mockito.any(LogEntry.class))).thenReturn(updatedLogEntry);
 
-// 		mockMvc.perform(put("/api/logentries/{id}", logId)
-// 				.contentType("application/json")
-// 				.content("{\"employeeName\": \"Alice\", \"logMessage\": \"Updated message\"}"))
-// 				.andExpect(status().isOk())
-// 				.andExpect(jsonPath("$.employeeName").value("Alice"))
-// 				.andExpect(jsonPath("$.logMessage").value("Updated message"));
-// 	}
+		mockMvc.perform(put("/api/logentries/{id}", logId)
+				.contentType("application/json")
+				.content("{\"employeeName\": \"Alice\", \"logMessage\": \"Updated message\"}"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.employeeName").value("Alice"))
+				.andExpect(jsonPath("$.logMessage").value("Updated message"));
+	}
 
-// 	@Test
-// 	public void testUpdateLogEntryReturnsNotFound() throws Exception {
-//     String logId = "1";
-//     LogEntry updatedLogEntry = new LogEntry(logId, "Alice", "Updated message", LocalDateTime.now());
+	@Test
+	public void testUpdateLogEntryReturnsNotFound() throws Exception {
+    String logId = "1";
+    LogEntry updatedLogEntry = new LogEntry(logId, "Alice", "Updated message", LocalDateTime.now());
 
-//     when(logEntryService.getLogEntryById(logId)).thenReturn(Optional.empty());
+    when(logEntryService.getLogEntryById(logId)).thenReturn(Optional.empty());
 
-//     mockMvc.perform(put("/api/logentries/{id}", logId)
-//             .contentType("application/json")
-//             .content("{\"employeeName\": \"Alice\", \"logMessage\": \"Updated message\"}"))
-//             .andExpect(status().isNotFound());
-// 	}
+    mockMvc.perform(put("/api/logentries/{id}", logId)
+            .contentType("application/json")
+            .content("{\"employeeName\": \"Alice\", \"logMessage\": \"Updated message\"}"))
+            .andExpect(status().isNotFound());
+	}
 
 
-// 	@Test
-// 	public void testDeleteLogEntryReturnsNoContent() throws Exception {
-// 		String logId = "1";
+	@Test
+	public void testDeleteLogEntryReturnsNoContent() throws Exception {
+		String logId = "1";
 
-// 		when(logEntryService.deleteLogEntryById(logId)).thenReturn(true);
+		when(logEntryService.deleteLogEntryById(logId)).thenReturn(true);
 
-// 		mockMvc.perform(delete("/api/logentries/{id}", logId))
-// 				.andExpect(status().isNoContent());
-// 	}
+		mockMvc.perform(delete("/api/logentries/{id}", logId))
+				.andExpect(status().isNoContent());
+	}
 
-// 	@Test
-// 	public void testDeleteLogEntryReturnsNotFound() throws Exception {
-// 		String logId = "1";
+	@Test
+	public void testDeleteLogEntryReturnsNotFound() throws Exception {
+		String logId = "1";
 
-// 		when(logEntryService.deleteLogEntryById(logId)).thenReturn(false);
+		when(logEntryService.deleteLogEntryById(logId)).thenReturn(false);
 
-// 		mockMvc.perform(delete("/api/logentries/{id}", logId))
-// 				.andExpect(status().isNotFound());
-// 	}
+		mockMvc.perform(delete("/api/logentries/{id}", logId))
+				.andExpect(status().isNotFound());
+	}
 
-// 	@Test
-// 	public void testDeleteLogEntriesReturnsOk() throws Exception {
-// 		List<String> ids = Arrays.asList("1", "2", "3");
+	@Test
+	public void testDeleteLogEntriesReturnsOk() throws Exception {
+		List<String> ids = Arrays.asList("1", "2", "3");
 
-// 		when(logEntryService.deleteLogEntryById("1")).thenReturn(true);
-// 		when(logEntryService.deleteLogEntryById("2")).thenReturn(true);
-// 		when(logEntryService.deleteLogEntryById("3")).thenReturn(true);
+		when(logEntryService.deleteLogEntryById("1")).thenReturn(true);
+		when(logEntryService.deleteLogEntryById("2")).thenReturn(true);
+		when(logEntryService.deleteLogEntryById("3")).thenReturn(true);
 
-// 		mockMvc.perform(delete("/api/logentries")
-// 				.contentType(MediaType.APPLICATION_JSON)
-// 				.content(objectMapper.writeValueAsString(ids)));
-// 	}
+		mockMvc.perform(delete("/api/logentries")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(ids)));
+	}
 
-// 	@Test
-// 	public void testDeleteLogEntriesReturnsBadRequest() throws Exception {
-// 		List<String> ids = Arrays.asList("1", "2", "3");
+	@Test
+	public void testDeleteLogEntriesReturnsBadRequest() throws Exception {
+		List<String> ids = Arrays.asList("1", "2", "3");
 
-// 		when(logEntryService.deleteLogEntryById("1")).thenReturn(true);
-// 		when(logEntryService.deleteLogEntryById("2")).thenReturn(false);
-// 		when(logEntryService.deleteLogEntryById("3")).thenReturn(true);
+		when(logEntryService.deleteLogEntryById("1")).thenReturn(true);
+		when(logEntryService.deleteLogEntryById("2")).thenReturn(false);
+		when(logEntryService.deleteLogEntryById("3")).thenReturn(true);
 
-// 		mockMvc.perform(delete("/api/logentries")
-// 				.contentType(MediaType.APPLICATION_JSON)
-// 				.content(objectMapper.writeValueAsString(ids)));
-// 	}
+		mockMvc.perform(delete("/api/logentries")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(ids)));
+	}
 
-// 	@Test
-//     public void testDeleteLogEntries() {
-//         when(logEntryService.deleteLogEntryById("1")).thenReturn(true);
-//         when(logEntryService.deleteLogEntryById("2")).thenReturn(true);
+	@Test
+    public void testDeleteLogEntries() {
+        when(logEntryService.deleteLogEntryById("1")).thenReturn(true);
+        when(logEntryService.deleteLogEntryById("2")).thenReturn(true);
 
-//         ResponseEntity<String> response = logEntryController.deleteLogEntries(Arrays.asList("1", "2"));
+        ResponseEntity<String> response = logEntryController.deleteLogEntries(Arrays.asList("1", "2"));
 
-//         System.out.println(response.getStatusCode());
-//         System.out.println(response.getBody());
-//     }
+        System.out.println(response.getStatusCode());
+        System.out.println(response.getBody());
+    }
 
-// 	@Test
-//     public void testDeleteLogEntries_someFailed_errorResponse() {
-//         when(logEntryService.deleteLogEntryById("1")).thenReturn(true);
-//         when(logEntryService.deleteLogEntryById("2")).thenReturn(false);
+	@Test
+    public void testDeleteLogEntries_someFailed_errorResponse() {
+        when(logEntryService.deleteLogEntryById("1")).thenReturn(true);
+        when(logEntryService.deleteLogEntryById("2")).thenReturn(false);
 
-//         ResponseEntity<String> response = logEntryController.deleteLogEntries(Arrays.asList("1", "2"));
+        ResponseEntity<String> response = logEntryController.deleteLogEntries(Arrays.asList("1", "2"));
 
-//         System.out.println(response.getStatusCode());
-//         System.out.println(response.getBody());
-//     }
+        System.out.println(response.getStatusCode());
+        System.out.println(response.getBody());
+    }
 
-// 	@Test
-//     public void testDeleteAllLogEntries() {
-//         ResponseEntity<Void> response = logEntryController.deleteAllLogEntries();
+	@Test
+    public void testDeleteAllLogEntries() {
+        ResponseEntity<Void> response = logEntryController.deleteAllLogEntries();
 
-//         verify(logEntryService, times(1)).deleteAll();
+        verify(logEntryService, times(1)).deleteAll();
 
-//         System.out.println(response.getStatusCode());
-//     }
+        System.out.println(response.getStatusCode());
+    }
 	
-// }
+}
