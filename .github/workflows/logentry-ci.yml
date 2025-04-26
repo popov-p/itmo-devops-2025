@@ -119,7 +119,7 @@ jobs:
 
   docker_publish:
     name: cd
-    needs: sonar
+    needs: sonarqube_scan
     runs-on: ubuntu-22.04
     steps:
       - name: Build frontend
