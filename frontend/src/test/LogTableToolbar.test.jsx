@@ -67,45 +67,45 @@ describe('LogTableToolbar', () => {
         );
     });
 
-    // it('should display the correct content when no rows are selected (numSelected === 0)', () => {
-    //     render(
-    //         <RowsProvider value={{ rows: [] }}>
-    //             <SelectedRowsProvider value={{ selectedRows: [], selectMultipleRows: vi.fn() }}>
-    //                 <LogTableToolbar numSelected={0} />
-    //             </SelectedRowsProvider>
-    //         </RowsProvider>
-    //     );
-    // });
+    it('should display the correct content when no rows are selected (numSelected === 0)', () => {
+        render(
+            <RowsProvider value={{ rows: [] }}>
+                <SelectedRowsProvider value={{ selectedRows: [], selectMultipleRows: vi.fn() }}>
+                    <LogTableToolbar numSelected={0} />
+                </SelectedRowsProvider>
+            </RowsProvider>
+        );
+    });
 
-    // it('should display the correct content when one row is selected (numSelected === 1)', () => {
-    //     const rows = [
-    //         { id: 1, employeeName: 'John Doe', logMessage: 'Test log 1', timestamp: '2025-04-25' }
-    //     ];
+    it('should display the correct content when one row is selected (numSelected === 1)', () => {
+        const rows = [
+            { id: 1, employeeName: 'John Doe', logMessage: 'Test log 1', timestamp: '2025-04-25' }
+        ];
 
-    //     render(
-    //         <RowsProvider value={{ rows }}>
-    //             <SelectedRowsProvider value={{ selectedRows: [1], selectMultipleRows: vi.fn() }}>
-    //                 <LogTableToolbar numSelected={1} />
-    //             </SelectedRowsProvider>
-    //         </RowsProvider>
-    //     );
-    // });
+        render(
+            <RowsProvider value={{ rows }}>
+                <SelectedRowsProvider value={{ selectedRows: [1], selectMultipleRows: vi.fn() }}>
+                    <LogTableToolbar numSelected={1} />
+                </SelectedRowsProvider>
+            </RowsProvider>
+        );
+    });
 
 
-    // it('should display the correct content when multiple rows are selected (numSelected > 1)', () => {
-    //     const rows = [
-    //         { id: 1, employeeName: 'John Doe', logMessage: 'Test log 1', timestamp: '2025-04-25' },
-    //         { id: 2, employeeName: 'Jane Smith', logMessage: 'Test log 2', timestamp: '2025-04-26' }
-    //     ];
+    it('should display the correct content when multiple rows are selected (numSelected > 1)', () => {
+        const rows = [
+            { id: 1, employeeName: 'John Doe', logMessage: 'Test log 1', timestamp: '2025-04-25' },
+            { id: 2, employeeName: 'Jane Smith', logMessage: 'Test log 2', timestamp: '2025-04-26' }
+        ];
 
-    //     render(
-    //         <RowsProvider value={{ rows }}>
-    //             <SelectedRowsProvider value={{ selectedRows: [1, 2], selectMultipleRows: vi.fn() }}>
-    //                 <LogTableToolbar numSelected={2} />
-    //             </SelectedRowsProvider>
-    //         </RowsProvider>
-    //     );
-    // });
+        render(
+            <RowsProvider value={{ rows }}>
+                <SelectedRowsProvider value={{ selectedRows: [1, 2], selectMultipleRows: vi.fn() }}>
+                    <LogTableToolbar numSelected={2} />
+                </SelectedRowsProvider>
+            </RowsProvider>
+        );
+    });
 
     it('should delete selected rows and update the state', async () => {
         const selectMultipleRowsMock = vi.fn();
