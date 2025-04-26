@@ -38,21 +38,6 @@ jobs:
 
   test:
     runs-on: ubuntu-22.04
-
-    services:
-      mongo:
-        image: mongo:4.4.6
-        env:
-          MONGO_INITDB_ROOT_USERNAME: pavel
-          MONGO_INITDB_ROOT_PASSWORD: popov
-        ports:
-          - 27017:27017
-        options: >-
-          --health-cmd mongo
-          --health-interval 2s
-          --health-timeout 2s
-          --health-retries 5
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -70,15 +55,6 @@ jobs:
   
       - name: Install frontend dependencies
         run: cd frontend && npm install
-
-      - name: Build backend
-        run: cd backend/ && ./gradlew build -x test --no-daemon
-        
-      - name: Run backend 
-        run: cd backend/ && java -jar ./build/libs/backend-0.0.1-SNAPSHOT.jar &
-
-      - name: Wait for backend to be ready
-        run: until curl --silent --output /dev/null --fail http://127.0.0.1:8070/api/logentries/health; do echo "Waiting for backend..."; sleep 5; done; echo "Backend is up!"
 
       - name: Tests backend
         run: cd backend/ && ./gradlew test --info --no-daemon
@@ -102,23 +78,7 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Cache SonarQube packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-
-      - name: Cache Gradle packages
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: ${{ runner.os }}-gradle
-
-      - name: SonarQube Scan
+      - name: SonarQube Scan Backend
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
@@ -126,7 +86,7 @@ jobs:
           SONAR_ORGANIZATION_KEY: ${{ secrets.SONAR_ORGANIZATION_KEY }}
         run: |
           cd backend
-          ./gradlew clean test jacocoTestReport sonar
+          ./gradlew jacocoTestReport sonar
 
       - name: Check Coverage Percentage
         run: |
