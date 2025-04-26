@@ -76,11 +76,11 @@ export default function LogTableToolbar(props) {
 
 
     function handleEdit() {
-        const timeInMicroseconds = performance.now();
-        console.log(`Нажата кнопка Edit, время: ${timeInMicroseconds.toFixed(0)} микросекунд`);
+        // const timeInMicroseconds = performance.now();
+        // console.log(`Нажата кнопка Edit, время: ${timeInMicroseconds.toFixed(0)} микросекунд`);
 
         if (selectedRows.length !== 1) {
-            console.warn("Должна быть выделена только одна строка для редактирования!");
+            // console.warn("Должна быть выделена только одна строка для редактирования!");
             return;
         }
 
@@ -88,11 +88,11 @@ export default function LogTableToolbar(props) {
         const selectedRow = rows.find(row => row.id === selectedId);
 
         if (!selectedRow) {
-            console.error("Не удалось найти запись для редактирования.");
+            // console.error("Не удалось найти запись для редактирования.");
             return;
         }
 
-        console.log("Редактируемая запись:", selectedRow);
+        // console.log("Редактируемая запись:", selectedRow);
 
         axios.get(`http://192.168.59.100:30070/api/logentries/${selectedId}`)
             .then((response) => {
@@ -160,14 +160,14 @@ export default function LogTableToolbar(props) {
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Delete">
-                        <IconButton onClick={handleDelete}>
+                        <IconButton onClick={handleDelete} data-testid="delete-button">
                             <DeleteIcon />
                         </IconButton>
                     </Tooltip>
                 </>
             ) : numSelected && rows.length !== 0 > 1 ? (
                 <Tooltip title="Delete">
-                    <IconButton onClick={handleDelete}>
+                    <IconButton onClick={handleDelete} data-testid="delete-button">
                         <DeleteIcon />
                     </IconButton>
                 </Tooltip>

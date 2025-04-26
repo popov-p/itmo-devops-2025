@@ -21,18 +21,18 @@ export default function LogTable() {
     const { selectedRows, selectRow, selectMultipleRows } = useSelectedRows();
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        console.log("Количество selectedRows:", selectedRows.length);
+        // console.log("Количество selectedRows:", selectedRows.length);
     }, [selectedRows]);
 
     useEffect(() => {
-        console.log("Количество  rows:", rows.length);
+        // console.log("Количество  rows:", rows.length);
         const totalPages = Math.ceil(rows.length / rowsPerPage);
 
-        console.log("totalPages: ", totalPages,
-                    "rows.length: ", rows.length);
+        // console.log("totalPages: ", totalPages,
+        //             "rows.length: ", rows.length);
 
         if (rows.length === 0) {
             setPage(0);
@@ -47,12 +47,12 @@ export default function LogTable() {
             .then((response) => {
                 setRows(response.data.reverse());
                 setLoading(false);
-                console.log("Данные успешно загружены !", "response data: ", response.data);
+                // console.log("Данные успешно загружены !", "response data: ", response.data);
             })
             .catch((error) => {
                 setRows([]);
                 setLoading(false);
-                console.log("Ошибка загрузки данных с бэкенда: ", error)
+                // console.log("Ошибка загрузки данных с бэкенда: ", error)
             });
     }, []);
 
@@ -67,7 +67,7 @@ export default function LogTable() {
             return;
         }
         else if (event.target.checked && selectedRows.length === 0) {
-            console.log('---> not checked and selecting all')
+            // console.log('---> not checked and selecting all')
             const newSelected = visibleRows.map((row) => row.id);
             console.log(newSelected);
             selectMultipleRows(newSelected);
@@ -75,12 +75,12 @@ export default function LogTable() {
         }
         else if (event.target.checked && 0 < selectedRows.length < rows.length
         ) {
-            console.log('---> intermediate')
+            // console.log('---> intermediate')
             selectMultipleRows([]);
             return;
         }
         else if (!event.target.checked && rows.length === selectedRows.length) {
-            console.log('---> not checked and selected all')
+            // console.log('---> not checked and selected all')
             selectMultipleRows([]);
             return;
         }
