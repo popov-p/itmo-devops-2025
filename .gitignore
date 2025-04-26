@@ -30,3 +30,4 @@ tf/terraform.tfstate.backup
 
 data/
 set-sonar-env.sh
+frontend/coverage

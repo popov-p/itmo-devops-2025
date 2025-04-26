@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { createRoot } from 'react-dom/client'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
 
@@ -29,9 +28,6 @@ const duneTheme = createTheme({
   },
 });
 
-
-
-
 export default function Main() {
   return (
     <ThemeProvider theme={duneTheme}>
@@ -45,6 +41,6 @@ export default function Main() {
   );
 }
 
-createRoot(document.getElementById('root')).render(
-  <Main />
-)
+// createRoot(document.getElementById('root')).render(
+//   <Main />
+// )
