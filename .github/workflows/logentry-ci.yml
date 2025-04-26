@@ -9,32 +9,32 @@ on:
       - sonarqube_integration
 
 jobs:
-  # build:
-  #   runs-on: ubuntu-22.04
+  build:
+    runs-on: ubuntu-22.04
 
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  #     - name: Install backend dependencies
-  #       uses: actions/setup-java@v3
-  #       with:
-  #         distribution: 'temurin'
-  #         java-version: '21'
+      - name: Install backend dependencies
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
       
-  #     - name: Install Node.js
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: '18'
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
   
-  #     - name: Install frontend dependencies
-  #       run: cd frontend && npm install
+      - name: Install frontend dependencies
+        run: cd frontend && npm install
 
-  #     - name: Build backend
-  #       run: cd backend/ && ./gradlew build -x test --no-daemon
+      - name: Build backend
+        run: cd backend/ && ./gradlew build -x test --no-daemon
       
-  #     - name: Build frontend
-  #       run: cd frontend/ && npm run build --if-present
+      - name: Build frontend
+        run: cd frontend/ && npm run build --if-present
 
   test:
     runs-on: ubuntu-22.04
@@ -84,12 +84,9 @@ jobs:
           SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
           SONAR_ORGANIZATION_KEY: ${{ secrets.SONAR_ORGANIZATION_KEY }}
         run: |
-          echo "SONAR_TOKEN=$SONAR_TOKEN"
-          echo "SONAR_HOST_URL=$SONAR_HOST_URL"
-          echo "SONAR_PROJECT_KEY=$SONAR_PROJECT_KEY"
-          echo "SONAR_ORGANIZATION_KEY=$SONAR_ORGANIZATION_KEY"
           cd backend
-          ./gradlew clean test jacocoTestReport sonar --info
+          ./gradlew clean test jacocoTestReport sonar --info\
+          -Dsonar.branch.name=main
 
       # - name: Check Coverage Percentage
       #   run: |
