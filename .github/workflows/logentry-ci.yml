@@ -95,7 +95,7 @@ jobs:
           SONAR_ORGANIZATION_KEY: ${{ secrets.SONAR_ORGANIZATION_KEY }}
         run: |
           cd backend
-          ./gradlew clean test jacocoTestReport --info -Dsonar.branch.name=main sonar
+          ./gradlew clean test jacocoTestReport --info -Dsonar.branch.name=master sonar
 
       - name: Check Coverage Percentage Backend
         run: |
