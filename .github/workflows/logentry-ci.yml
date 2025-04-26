@@ -122,6 +122,9 @@ jobs:
     needs: sonarqube_scan
     runs-on: ubuntu-22.04
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
       - name: Build frontend
         run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/devel-frontend:latest ./frontend
 
