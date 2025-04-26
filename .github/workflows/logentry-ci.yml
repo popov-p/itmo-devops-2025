@@ -89,7 +89,7 @@ jobs:
           echo "SONAR_PROJECT_KEY=$SONAR_PROJECT_KEY"
           echo "SONAR_ORGANIZATION_KEY=$SONAR_ORGANIZATION_KEY"
           cd backend
-          ./gradlew clean jacocoTestReport sonar --info
+          ./gradlew clean test jacocoTestReport sonar --info
 
       # - name: Check Coverage Percentage
       #   run: |
