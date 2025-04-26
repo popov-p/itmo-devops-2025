@@ -59,6 +59,36 @@ sonarqube {
 		property "sonar.organization", System.getenv("SONAR_ORGANIZATION_KEY") ?: "NOTFOUND"
         property "sonar.java.binaries", "build/classes/java/main"
 		property "sonar.coverage.jacoco.xmlReportPaths", "$buildDir/reports/jacoco/test/jacocoTestReport.xml"
+		property "sonar.coverage.jacoco.htmlCoverageExtractionPath", "$buildDir/reports/jacoco/test/html/index.html"
 		property "sonar.scm.disabled", "true"
+    }
+}
+
+tasks.register('extractCoverage') {
+    doLast {
+        def filePath = "$buildDir/reports/jacoco/test/html/index.html"
+        def file = file(filePath)
+
+        if (!file.exists()) {
+            println "HTML file not found at: $filePath"
+            throw new GradleException("Coverage HTML file not found")
+        }
+
+        def html = file.text
+        def matcher = html =~ /<td class="ctr2" id="c0">([^<]+)%<\/td>/
+
+        if (matcher.find()) {
+            def percentStr = matcher.group(1)
+            def percent = percentStr.replace("%", "").toInteger()
+
+            println "Extracted coverage: ${percent}%"
+
+            if (percent < 80) {
+                throw new GradleException("Coverage too low: ${percent}%. Must be at least 80%")
+            }
+        } else {
+            println "Coverage value not found in HTML!"
+            throw new GradleException("Could not extract coverage value from HTML")
+        }
     }
 }
