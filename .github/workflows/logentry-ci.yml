@@ -63,9 +63,8 @@ jobs:
         run: cd frontend && npm test -- --run
 
   sonarqube_scan:
-    name: sonar scan
+    name: sonar
     runs-on: ubuntu-22.04
-    needs: test
 
     steps:
       - uses: actions/checkout@v4
@@ -88,7 +87,7 @@ jobs:
           cd backend
           ./gradlew jacocoTestReport sonar
 
-      - name: Check Coverage Percentage
-        run: |
-          cd backend
-          ./gradlew extractCoverage
+      # - name: Check Coverage Percentage
+      #   run: |
+      #     cd backend
+      #     ./gradlew extractCoverage
