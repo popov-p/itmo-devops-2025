@@ -91,7 +91,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY_BACKEND }}
+          SONAR_PROJECT_KEY_BACKEND: ${{ secrets.SONAR_PROJECT_KEY_BACKEND }}
           SONAR_ORGANIZATION_KEY: ${{ secrets.SONAR_ORGANIZATION_KEY }}
         run: |
           cd backend
@@ -106,7 +106,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY_FRONTEND }}
+          SONAR_PROJECT_KEY_FRONTEND: ${{ secrets.SONAR_PROJECT_KEY_FRONTEND }}
           SONAR_ORGANIZATION_KEY: ${{ secrets.SONAR_ORGANIZATION_KEY }}
         run: |
           cd frontend 
