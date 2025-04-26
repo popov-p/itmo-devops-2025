@@ -62,67 +62,67 @@ test('рендерит диалог и тестируется нажатие о�
     expect(closeLogFormDialog).toHaveBeenCalled();
 });
 
-// test('Создание новой записи', async () => {
-//     const mockCloseDialog = vi.fn();
-//     const mockSetRows = vi.fn();
+test('Создание новой записи', async () => {
+    const mockCloseDialog = vi.fn();
+    const mockSetRows = vi.fn();
   
-//     axios.post.mockResolvedValue({ data: { id: 1, employeeName: 'John Doe', logMessage: 'Test message' } });
-//     axios.get.mockResolvedValue({ data: [{ id: 1, employeeName: 'John Doe', logMessage: 'Test message' }] });
+    axios.post.mockResolvedValue({ data: { id: 1, employeeName: 'John Doe', logMessage: 'Test message' } });
+    axios.get.mockResolvedValue({ data: [{ id: 1, employeeName: 'John Doe', logMessage: 'Test message' }] });
   
-//     render(
-//       <SelectedRowsProvider>
-//         <LogFormDialog opened={true} closeLogFormDialog={mockCloseDialog} setRows={mockSetRows} />
-//       </SelectedRowsProvider>
-//     );
+    render(
+      <SelectedRowsProvider>
+        <LogFormDialog opened={true} closeLogFormDialog={mockCloseDialog} setRows={mockSetRows} />
+      </SelectedRowsProvider>
+    );
   
-//     fireEvent.change(screen.getByLabelText(/ФИО/i), { target: { value: 'John Doe' } });
-//     fireEvent.change(screen.getByLabelText(/Текст/i), { target: { value: 'Test message' } });
+    fireEvent.change(screen.getByLabelText(/ФИО/i), { target: { value: 'John Doe' } });
+    fireEvent.change(screen.getByLabelText(/Текст/i), { target: { value: 'Test message' } });
 
-//     fireEvent.click(screen.getByText(/Отправить/i));
+    fireEvent.click(screen.getByText(/Отправить/i));
   
-//     await waitFor(() => {
-//       expect(axios.post).toHaveBeenCalledWith('http://192.168.59.100:30070/api/logentries', {
-//         employeeName: 'John Doe',
-//         logMessage: 'Test message',
-//       });
+    await waitFor(() => {
+      expect(axios.post).toHaveBeenCalledWith('http://192.168.59.100:30070/api/logentries', {
+        employeeName: 'John Doe',
+        logMessage: 'Test message',
+      });
   
-//       expect(axios.get).toHaveBeenCalledWith('http://192.168.59.100:30070/api/logentries');
-//     });
+      expect(axios.get).toHaveBeenCalledWith('http://192.168.59.100:30070/api/logentries');
+    });
   
-//     expect(mockCloseDialog).toHaveBeenCalledTimes(2);
-//   });
+    expect(mockCloseDialog).toHaveBeenCalledTimes(2);
+  });
 
 
-//   test('обновление записи с idToEdit', async () => {
-//     const mockCloseDialog = vi.fn();
-//     const mockSetRows = vi.fn();
-//     const idToEdit = 1;
-//     const data = { employeeName: 'Jane Doe', logMessage: 'Updated message' };
+  test('обновление записи с idToEdit', async () => {
+    const mockCloseDialog = vi.fn();
+    const mockSetRows = vi.fn();
+    const idToEdit = 1;
+    const data = { employeeName: 'Jane Doe', logMessage: 'Updated message' };
   
-//     axios.put.mockResolvedValue({ data: { id: 1, employeeName: 'Jane Doe', logMessage: 'Updated message' } });
+    axios.put.mockResolvedValue({ data: { id: 1, employeeName: 'Jane Doe', logMessage: 'Updated message' } });
   
-//     render(
-//       <LogFormDialog
-//         opened={true}
-//         closeLogFormDialog={mockCloseDialog}
-//         setRows={mockSetRows}
-//         idToEdit={idToEdit}
-//         employeeName="John Doe"
-//         logMessage="Old message"
-//       />
-//     );
+    render(
+      <LogFormDialog
+        opened={true}
+        closeLogFormDialog={mockCloseDialog}
+        setRows={mockSetRows}
+        idToEdit={idToEdit}
+        employeeName="John Doe"
+        logMessage="Old message"
+      />
+    );
   
-//     fireEvent.change(screen.getByLabelText(/ФИО/i), { target: { value: 'Jane Doe' } });
-//     fireEvent.change(screen.getByLabelText(/Текст/i), { target: { value: 'Updated message' } });
+    fireEvent.change(screen.getByLabelText(/ФИО/i), { target: { value: 'Jane Doe' } });
+    fireEvent.change(screen.getByLabelText(/Текст/i), { target: { value: 'Updated message' } });
   
-//     fireEvent.click(screen.getByText(/Отправить/i));
+    fireEvent.click(screen.getByText(/Отправить/i));
   
-//     await waitFor(() => {
-//       expect(axios.put).toHaveBeenCalledWith(
-//         `http://192.168.59.100:30070/api/logentries/${idToEdit}`,
-//         { employeeName: 'Jane Doe', logMessage: 'Updated message' }
-//       );
-//     });
+    await waitFor(() => {
+      expect(axios.put).toHaveBeenCalledWith(
+        `http://192.168.59.100:30070/api/logentries/${idToEdit}`,
+        { employeeName: 'Jane Doe', logMessage: 'Updated message' }
+      );
+    });
   
-//     expect(mockCloseDialog).toHaveBeenCalledTimes(2);  
-//   });
+    expect(mockCloseDialog).toHaveBeenCalledTimes(2);  
+  });
