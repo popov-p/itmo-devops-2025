@@ -77,17 +77,42 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+  
+      - name: Install frontend dependencies
+        run: cd frontend && npm install
+
+
       - name: SonarQube Scan Backend
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY_BACKEND }}
           SONAR_ORGANIZATION_KEY: ${{ secrets.SONAR_ORGANIZATION_KEY }}
         run: |
           cd backend
           ./gradlew clean test jacocoTestReport --info -Dsonar.branch.name=main sonar
 
-      - name: Check Coverage Percentage
+      - name: Check Coverage Percentage Backend
         run: |
           cd backend
           ./gradlew extractCoverage
+
+      - name: SonarQube Scan Backend
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY_BACKEND }}
+          SONAR_ORGANIZATION_KEY: ${{ secrets.SONAR_ORGANIZATION_KEY }}
+        run: |
+          cd frontend 
+          npm run sonar:coverage
+      
+      - name: Check Coverage Percentage Frontend
+        run: |
+          cd frontend
+          chmod +x ./check-coverage-frontend.sh && ./check-coverage-frontend.sh

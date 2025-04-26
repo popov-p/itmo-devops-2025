@@ -32,3 +32,5 @@ data/
 set-sonar-env.sh
 frontend/coverage
 frontend/package-lock.json
+frontend/.scannerwork
+frontend/package-lock.json

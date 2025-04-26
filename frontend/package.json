@@ -8,7 +8,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+     "sonar:coverage": "npm run test -- --run --coverage && sonar-scanner -Dsonar.projectKey=$SONAR_PROJECT_KEY_FRONTEND -Dsonar.organization=$SONAR_ORGANIZATION_KEY -Dsonar.token=$SONAR_TOKEN -Dsonar.host.url=https://sonarcloud.io -Dsonar.sources=src -Dsonar.tests=src/test -Dsonar.exclusions=src/test/** -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info -Dsonar.scm.disabled=true"
   },
   "dependencies": {
     "jsdom": "^19.0.0",
@@ -38,6 +39,7 @@
     "react-router-dom": "^6.10.0",
     "vite": "^6.2.0",
     "vitest": "^3.0.8",
-    "yup": "1.6.1"
+    "yup": "1.6.1",
+    "sonar-scanner": "^3.0.0"
   }
 }

@@ -10,9 +10,13 @@ export default defineConfig({
     hmr: {
       host: '192.168.59.100',
     },
-    test: {
-      globals: true,
-      environment: 'jsdom',
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    coverage: {
+      reporter: ['text', 'lcov'],
+      reportsDirectory: './coverage',
     },
   },
 })
