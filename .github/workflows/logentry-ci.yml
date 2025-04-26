@@ -87,7 +87,7 @@ jobs:
           cd backend
           ./gradlew clean test jacocoTestReport --info -Dsonar.branch.name=main sonar
 
-      # - name: Check Coverage Percentage
-      #   run: |
-      #     cd backend
-      #     ./gradlew extractCoverage
+      - name: Check Coverage Percentage
+        run: |
+          cd backend
+          ./gradlew extractCoverage
