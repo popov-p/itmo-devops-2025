@@ -38,3 +38,4 @@ grafana
 prometheus
 package-lock.json
 client/__pycache__
+autogen

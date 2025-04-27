@@ -2,6 +2,8 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: frontend
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: "frontend=pavel5926/devel-frontend:latest"
   labels:
     app: frontend
 spec:
@@ -15,9 +17,9 @@ spec:
         - name: VITE_HOST
           value: "0.0.0.0"
         - name: VITE_HMR_HOST
-          value: "192.168.59.106"
+          value: "192.168.59.107"
         - name: VITE_API_BASE_HOST
-          value: "192.168.59.106"
+          value: "192.168.59.107"
   restartPolicy: OnFailure
 ---
 apiVersion: v1
