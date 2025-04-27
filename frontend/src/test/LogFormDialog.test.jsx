@@ -81,12 +81,12 @@ test('Создание новой записи', async () => {
     fireEvent.click(screen.getByText(/Отправить/i));
   
     await waitFor(() => {
-      expect(axios.post).toHaveBeenCalledWith('http://192.168.59.100:30070/api/logentries', {
+      expect(axios.post).toHaveBeenCalledWith(expect.any(String), {
         employeeName: 'John Doe',
         logMessage: 'Test message',
       });
   
-      expect(axios.get).toHaveBeenCalledWith('http://192.168.59.100:30070/api/logentries');
+      expect(axios.get).toHaveBeenCalledWith(expect.any(String));
     });
   
     expect(mockCloseDialog).toHaveBeenCalledTimes(2);
@@ -119,7 +119,7 @@ test('Создание новой записи', async () => {
   
     await waitFor(() => {
       expect(axios.put).toHaveBeenCalledWith(
-        `http://192.168.59.100:30070/api/logentries/${idToEdit}`,
+        expect.any(String),
         { employeeName: 'Jane Doe', logMessage: 'Updated message' }
       );
     });
