@@ -10,6 +10,7 @@ spec:
   containers:
     - image: pavel5926/devel-frontend:latest
       name: frontend
+      imagePullPolicy: Always
       ports:
         - containerPort: 5173
           protocol: TCP
