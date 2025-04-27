@@ -37,3 +37,4 @@ frontend/package-lock.json
 grafana
 prometheus
 package-lock.json
+client/__pycache__
