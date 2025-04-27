@@ -43,7 +43,8 @@ export default function LogTable() {
     }, [rows]);
 
     useEffect(() => {
-        axios.get('http://192.168.59.100:30070/api/logentries')
+        console.log('VITE_API_BASE_HOST =', import.meta.env.VITE_API_BASE_HOST);
+        axios.get(`http://${import.meta.env.VITE_API_BASE_HOST}:30070/api/logentries`)
             .then((response) => {
                 setRows(response.data.reverse());
                 setLoading(false);

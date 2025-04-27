@@ -40,7 +40,3 @@ export default function Main() {
     </ThemeProvider>
   );
 }
-
-// createRoot(document.getElementById('root')).render(
-//   <Main />
-// )

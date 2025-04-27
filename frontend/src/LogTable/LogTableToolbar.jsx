@@ -44,7 +44,7 @@ export default function LogTableToolbar(props) {
         console.log(`Нажата кнопка Delete, время: ${timeInMicroseconds.toFixed(0)} микросекунд. Selected rows to delete:`, JSON.stringify(selectedRows));
 
         const deleteRequests = selectedRows.map(id =>
-            axios.delete(`http://192.168.59.100:30070/api/logentries/${id}`).then(() => id)
+            axios.delete(`http://${import.meta.env.VITE_API_BASE_HOST}:30070/api/logentries/${id}`).then(() => id)
         );
 
         Promise.allSettled(deleteRequests)
@@ -94,7 +94,7 @@ export default function LogTableToolbar(props) {
 
         // console.log("Редактируемая запись:", selectedRow);
 
-        axios.get(`http://192.168.59.100:30070/api/logentries/${selectedId}`)
+        axios.get(`http://${import.meta.env.VITE_API_BASE_HOST}:30070/api/logentries/${selectedId}`)
             .then((response) => {
                 console.log("Данные для редактирования получены:", response.data);
 

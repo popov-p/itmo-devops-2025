@@ -34,3 +34,6 @@ frontend/coverage
 frontend/package-lock.json
 frontend/.scannerwork
 frontend/package-lock.json
+grafana
+prometheus
+package-lock.json

@@ -22,7 +22,6 @@ const schema = yup.object().shape({
     .max(500, "Максимум 500 символов"),
 });
 
-
 export default function LogFormDialog({
   opened,
   idToEdit,
@@ -45,16 +44,16 @@ export default function LogFormDialog({
       let response;
 
       if (idToEdit) {
-        response = await axios.put(`http://192.168.59.100:30070/api/logentries/${idToEdit}`, data);
+        response = await axios.put(`http://${import.meta.env.VITE_API_BASE_HOST}:30070/api/logentries/${idToEdit}`, data);
         console.log(`Запись с ID ${idToEdit} обновлена:`, response.data);
       } else {
-        response = await axios.post('http://192.168.59.100:30070/api/logentries', data);
+        response = await axios.post(`http://${import.meta.env.VITE_API_BASE_HOST}:30070/api/logentries`, data);
         console.log('Новая запись создана:', response.data);
       }
 
       console.log('Ответ от сервера:', response.data);
 
-      await axios.get('http://192.168.59.100:30070/api/logentries')
+      await axios.get(`http://${import.meta.env.VITE_API_BASE_HOST}:30070/api/logentries`)
         .then((response) => {
           setRows(response.data.reverse());
           console.log("Данные успешно загружены !", "response data: ", response.data);
