@@ -32,3 +32,4 @@ kubectl config use-context minikube
 flux install
 kubectl get pods -n flux-system
 flux install --components=source-controller,image-reflector-controller,image-automation-controller
+kubectl get imagerepositories.image.toolkit.fluxcd.io frontend-image -n flux-system

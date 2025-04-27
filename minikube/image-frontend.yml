@@ -1,8 +1,8 @@
-apiVersion: image.toolkit.fluxcd.io/v1beta1
+apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImageRepository
 metadata:
   name: frontend-image
   namespace: flux-system
 spec:
-  image: pavel5926/devel-frontend:latest
+  image: pavel5926/devel-frontend
   interval: 10s

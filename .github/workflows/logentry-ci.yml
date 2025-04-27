@@ -118,7 +118,7 @@ jobs:
           chmod +x ./check-coverage-frontend.sh && ./check-coverage-frontend.sh
 
   docker_publish:
-    name: cd
+    name: publish
     needs: sonarqube_scan
     runs-on: ubuntu-22.04
     steps:
