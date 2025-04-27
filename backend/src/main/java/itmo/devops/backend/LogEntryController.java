@@ -25,6 +25,9 @@ public class LogEntryController {
 
     private final Counter getAllLogentriesRequestCounter;
 
+    @Autowired
+    private RabbitMqSender rabbitMqSender;
+
     public LogEntryController(MeterRegistry registry, @Value("${POD_NAME:unknown}") String podName) {
         this.getAllLogentriesRequestCounter = Counter.builder("logentries_get_requests_total")
                                                       .tag("type", "GET")
@@ -55,6 +58,8 @@ public class LogEntryController {
     public ResponseEntity<LogEntry> createLog(@RequestBody LogEntry logEntry) {
         logEntry.setTimestamp(LocalDateTime.now());
         LogEntry savedLog = logEntryService.saveLogEntry(logEntry);
+
+        rabbitMqSender.sendMessage(savedLog.getEmployeeName(), savedLog.getLogMessage());
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
