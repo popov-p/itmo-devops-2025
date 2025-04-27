@@ -32,7 +32,7 @@ import java.util.Optional;
 import java.util.Arrays;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class LogEntryControllerTests {
+class LogEntryControllerTest {
 
 	@Autowired
 	private TestRestTemplate restTemplate;
