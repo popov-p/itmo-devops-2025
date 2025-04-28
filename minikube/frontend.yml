@@ -1,24 +1,31 @@
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment 
 metadata:
   name: frontend
-  labels:
-    app: frontend
 spec:
-  containers:
-    - image: pavel5926/devel-frontend:latest
-      name: frontend
-      ports:
-        - containerPort: 5173
-          protocol: TCP
-      env:
-        - name: VITE_HOST
-          value: "0.0.0.0"
-        - name: VITE_HMR_HOST
-          value: "192.168.59.108"
-        - name: VITE_API_BASE_HOST
-          value: "192.168.59.108"
-  restartPolicy: OnFailure
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - image: pavel5926/devel-frontend:build-84
+        name: frontend
+        ports:
+          - containerPort: 5173
+            protocol: TCP
+        env:
+          - name: VITE_HOST
+            value: "0.0.0.0"
+          - name: VITE_HMR_HOST
+            value: "192.168.59.108"
+          - name: VITE_API_BASE_HOST
+            value: "192.168.59.108"
+        imagePullPolicy: Always
 ---
 apiVersion: v1
 kind: Service
