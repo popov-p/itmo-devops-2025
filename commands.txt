@@ -21,6 +21,9 @@ https://medium.com/@cloudspinx/fix-error-metrics-api-not-available-in-kubernetes
 
 protoc --java_out=./backend/src/main/java message.proto --proto_path=./messages/
 
+flux install
+flux install --components-extra=image-reflector-controller,image-automation-controller
+
 cd /etc/systemd/system
 sudo systemctl daemon-reload
 sudo systemctl enable --now update-minikube.timer
