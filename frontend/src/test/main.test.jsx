@@ -9,3 +9,5 @@ import Main from '../Main';
 test('рендерит Main без ошибок', () => {
   render(<Main />);
 });
+
+
