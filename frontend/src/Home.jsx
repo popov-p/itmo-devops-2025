@@ -10,7 +10,7 @@ export default function Home() {
             <AppBar position="fixed" sx={{ color: 'primary.main' }}>
                 <Toolbar>
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        Учёт изменений состояния серверной Ы
+                        Учёт изменений состояния серверной
                     </Typography>
                 </Toolbar>
             </AppBar>
