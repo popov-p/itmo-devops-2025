@@ -27,6 +27,7 @@ const headCells = [
 ];
 
 
+
 export default function LogTableHead(props) {
     const { onSelectAllClick, numSelected, rowCount } =
         props;

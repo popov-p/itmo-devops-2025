@@ -27,6 +27,10 @@ flux install --components-extra=image-reflector-controller,image-automation-cont
 flux get image repository -n flux-system
 flux get image policy -n flux-system
 flux get image update -n flux-system
+kubectl apply -k github.com/fluxcd/flux2/manifests/crds
+kubectl delete kustomization --namespace flux-system --all
+
+
 
 kubectl create secret generic flux-git-ssh \
   --namespace=flux-system \
