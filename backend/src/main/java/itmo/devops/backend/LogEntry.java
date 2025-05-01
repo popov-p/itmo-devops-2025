@@ -56,6 +56,3 @@ public class LogEntry {
         this.timestamp = timestamp;
     }
 }
-
-
-
