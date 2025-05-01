@@ -1,7 +1,6 @@
 package itmo.devops.backend;
 
 import java.time.LocalDateTime;
-import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,22 +8,17 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.mockito.*;
 import static org.mockito.Mockito.*;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 import java.util.Collections;
@@ -99,9 +93,6 @@ class LogEntryControllerTest {
         when(logEntryService.saveLogEntry(mockLogEntry)).thenReturn(mockLogEntry);
 		doNothing().when(rabbitMqSender).sendMessage(any(String.class), any(String.class));
 
-//        mockMvc.perform(post("/api/logentries")
-//                .contentType("application/json")
-//                .content("{ \"employeeName\": \"Alice\", \"logMessage\": \"Test message\" }"));
     }
 
 	@Test

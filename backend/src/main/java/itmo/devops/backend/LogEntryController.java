@@ -1,8 +1,7 @@
 package itmo.devops.backend;
-
+import itmo.devops.backend.dto.LogEntryDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,9 +28,10 @@ public class LogEntryController {
     private RabbitMqSender rabbitMqSender;
 
     public LogEntryController(MeterRegistry registry, @Value("${POD_NAME:unknown}") String podName) {
+        String sanitizedPodName = podName.replaceAll("[\\n\\r]", "_");
         this.getAllLogentriesRequestCounter = Counter.builder("logentries_get_requests_total")
                                                       .tag("type", "GET")
-                                                      .tag("pod", podName)
+                                                      .tag("pod", sanitizedPodName)
                                                       .register(registry);
     }
 
@@ -55,8 +55,12 @@ public class LogEntryController {
     }
 
     @PostMapping
-    public ResponseEntity<LogEntry> createLog(@RequestBody LogEntry logEntry) {
+    public ResponseEntity<LogEntry> createLog(@RequestBody LogEntryDto logEntryDto) {
+        LogEntry logEntry = new LogEntry();
+        logEntry.setEmployeeName(logEntryDto.getEmployeeName());
+        logEntry.setLogMessage(logEntryDto.getLogMessage());
         logEntry.setTimestamp(LocalDateTime.now());
+
         LogEntry savedLog = logEntryService.saveLogEntry(logEntry);
 
         rabbitMqSender.sendMessage(savedLog.getEmployeeName(), savedLog.getLogMessage());
@@ -66,24 +70,38 @@ public class LogEntryController {
                 .body(savedLog);
     }
 
+
     @PutMapping("/{id}")
-    public ResponseEntity<LogEntry> updateLogEntry(@PathVariable String id, @RequestBody LogEntry logEntry) {
-        Optional<LogEntry> existingLog = logEntryService.getLogEntryById(id);
+public ResponseEntity<LogEntryDto> updateLogEntry(@PathVariable String id, @RequestBody LogEntryDto logEntryDto) {
+    Optional<LogEntry> existingLog = logEntryService.getLogEntryById(id);
 
-        if (existingLog.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-
-        logEntry.setId(id);
-        logEntry.setTimestamp(LocalDateTime.now());
-        LogEntry updatedLog = logEntryService.saveLogEntry(logEntry);
-
-        return ResponseEntity.ok(updatedLog);
+    if (existingLog.isEmpty()) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
+
+    LogEntry updatedEntity = new LogEntry(
+        id,
+        logEntryDto.getEmployeeName(),
+        logEntryDto.getLogMessage(),
+        LocalDateTime.now()
+    );
+
+    LogEntry saved = logEntryService.saveLogEntry(updatedEntity);
+
+    LogEntryDto responseDto = new LogEntryDto();
+    responseDto.setEmployeeName(saved.getEmployeeName());
+    responseDto.setLogMessage(saved.getLogMessage());
+
+    return ResponseEntity.ok(responseDto);
+}
+
 
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLogEntry(@PathVariable String id) {
+        if (!isValidMongoId(id)) {
+            return ResponseEntity.badRequest().build();
+        }
         boolean deleted = logEntryService.deleteLogEntryById(id);
 
         if (!deleted) {
@@ -98,6 +116,12 @@ public class LogEntryController {
         boolean allDeleted = true;
 
         for (String id : ids) {
+            if (!isValidMongoId(id)) {
+                return ResponseEntity.badRequest().body("Invalid ID format: " + id);
+            }
+        }
+        
+        for (String id : ids) {
             if (!logEntryService.deleteLogEntryById(id)) {
                 allDeleted = false;
             }
@@ -110,6 +134,10 @@ public class LogEntryController {
             logger.warn("Controller: Some log entries could not be deleted.");
             return ResponseEntity.status(400).body("Some log entries could not be deleted.");
         }
+    }
+
+    private boolean isValidMongoId(String id) {
+        return id != null && id.matches("[a-f0-9]{1,24}");
     }
 
     @DeleteMapping("/all")

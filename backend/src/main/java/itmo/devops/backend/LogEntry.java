@@ -17,6 +17,7 @@ public class LogEntry {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime timestamp;
 
+    public LogEntry() {}
     public LogEntry(String id, String employeeName, String logMessage, LocalDateTime timestamp) {
         this.id = id;
         this.employeeName = employeeName;
