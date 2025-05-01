@@ -37,6 +37,12 @@ kubectl create secret generic flux-git-ssh \
   --from-file=identity=flux-git-key \
   --from-file=known_hosts=<(ssh-keyscan github.com)
 
+kubectl create secret docker-registry docker-hub-secret \
+  --namespace=flux-system \
+  --docker-username=<your-username> \
+  --docker-password=<your-password> \
+  --docker-server=https://index.docker.io/v1/
+
 
 cd /etc/systemd/system
 sudo systemctl daemon-reload
