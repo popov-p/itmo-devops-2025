@@ -16,5 +16,5 @@ test('рендерит компонент Home и проверяет элеме�
         </RowsProvider>
     );
 
-    expect(screen.getByText('Учёт изменений состояния серверной')).toBeTruthy();
+    expect(screen.getByText('Учёт изменений состояния серверной Ы')).toBeTruthy();
 });
