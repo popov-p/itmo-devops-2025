@@ -71,6 +71,8 @@ public class LogEntryController {
     }
 
 
+
+
     @PutMapping("/{id}")
 public ResponseEntity<LogEntryDto> updateLogEntry(@PathVariable String id, @RequestBody LogEntryDto logEntryDto) {
     Optional<LogEntry> existingLog = logEntryService.getLogEntryById(id);
